@@ -1,19 +1,26 @@
-function background = median_filter(folder)
+function background = median_filter(path, image_type)
 
-reds = cell(100, 1);
-greens = cell(100, 1);
-blues = cell(100, 1);
-for c = 1 : 100
-    image = imread(sprintf('%s/%08d.jpg', folder, c));
-    red = image(:,:,1);
-    green = image(:,:,2);
-    blue = image(:,:,3);
-    reds{c} = red;
-    greens{c} = green;
-    blues{c} = blue;
+if nargin < 2
+    image_type = 'jpg';
 end
+
 dim = 2;
-redMedian = median(cat(dim + 1, reds{:}), dim + 1);
-greenMedian = median(cat(dim + 1, greens{:}), dim + 1);
-blueMedian = median(cat(dim + 1, blues{:}), dim + 1);
-background = cat(dim + 1, redMedian, greenMedian, blueMedian);
+
+files = dir(sprintf('%s/*.%s', path, image_type));
+filenames = {files.name};
+[~, num_files] = size(filenames);
+
+reds = cell(num_files, 1);
+greens = cell(num_files, 1);
+blues = cell(num_files, 1);
+for c = 1 : num_files
+    image = imread(sprintf('%s/%s', path, filenames{c}));
+    reds{c} = image(:,:,1);
+    greens{c} = image(:,:,2);
+    blues{c} = image(:,:,3);
+end
+red_median = median(cat(dim + 1, reds{:}), dim + 1);
+green_median = median(cat(dim + 1, greens{:}), dim + 1);
+blue_median = median(cat(dim + 1, blues{:}), dim + 1);
+
+background = cat(dim + 1, red_median, green_median, blue_median);
