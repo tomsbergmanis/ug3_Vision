@@ -1,9 +1,7 @@
-function color_mask = threshold_color_rgb(image, color, threshold)
+function color_mask = filter_color(image, color, threshold)
 
 [num_rows, num_cols, ~] = size(image);
 color_mask = zeros(num_rows, num_cols);
-
-image = rgb_normalise(image);
 
 red = image(:,:,1);
 green = image(:,:,2);
