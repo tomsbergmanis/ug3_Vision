@@ -1,4 +1,4 @@
-function normalised_image = rgb_normalise(image)
+function normalised_image = normalise_rgb(image)
 
 red = double(image(:,:,1));
 green = double(image(:,:,2));
