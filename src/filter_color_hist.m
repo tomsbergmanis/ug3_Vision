@@ -1,3 +1,19 @@
+function color_mask = filter_color_hist(image, color)
+
+[num_rows num_cols ~] = size(image);
+color_mask = zeros(num_rows, num_cols);
+
+if strcmpi(color, 'red')
+    image_channel = image(:,:,1);
+elseif strcmpi(color, 'green')
+    image_channel = image(:,:,2);
+elseif strcmpi(color, 'blue')
+    image_channel = image(:,:,3);
+end
+
+color_mask(image_channel >= right_threshold(image_channel)) = 1;
+
+
 function thresh = right_threshold(image_channel)
 
 hist = smooth_histogram(histc(image_channel(:), 0 : 255), 50, 4);
@@ -38,3 +54,14 @@ if valley_right == -1
 end
 
 thresh = valley_right;
+
+function smooth_hist = smooth_histogram(hist, filterlen, sizeparam)
+
+[len ~] = size(hist);
+
+filter = exp(-0.5*(sizeparam/filterlen*[-(filterlen-1) : 2 : filterlen-1]').^2);
+filter = filter/sum(filter);
+
+convolution = conv(filter, hist);
+smooth_hist = convolution(1 + filterlen/2 : len + filterlen/2);
+
