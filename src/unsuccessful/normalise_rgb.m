@@ -1,3 +1,7 @@
+% rgb normalisation should remove illumination differences from an image
+% however, applying the technique to the images in the provided data-sets
+% reveals that it turns the robots' shadows into an awkward shade of red
+% this messes with some things (such as color segmentation based on hsv)
 function normalised_image = normalise_rgb(image)
     red = double(image(:,:,1));
     green = double(image(:,:,2));

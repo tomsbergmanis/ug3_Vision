@@ -1,3 +1,31 @@
+% one way to segment an image into a known number of N different colors is
+% to cluster its pixels into N+1 bins and hope that N of these correspond to
+% colors and the N+1th to 'everything else'
+% doesn't give good results
+function image_mask = filter_color_kmeans(image, num_colors, show)
+    if nargin < 2
+        num_colors = 3;
+    end
+    if nargin < 3
+        show = 0;
+    end
+
+    [num_rows, num_cols, num_channels] = size(image);
+    % for this to work at all, need to transform the image to a color space
+    % with more discriminative power than straight rgb
+    % L*a*b (with discarded L channel) doesn't work
+    % hsv (with discarded s/v channels) doesn't work
+    image = normalise_rgb(image);
+    image = double(reshape(image, num_rows * num_cols, num_channels));
+
+    [cluster_idx, cluster_centers] = fkmeans(image, num_colors + 1);
+    image_mask = reshape(cluster_idx, num_rows, num_cols);
+
+    if show
+        imshow(image_mask, []);
+    end
+end
+
 % FKMEANS Fast K-means with optional weighting and careful initialization.
 % [L, C, D] = FKMEANS(X, k) partitions the vectors in the n-by-p matrix X
 % into k (or, rarely, fewer) clusters by applying the well known batch

@@ -1,5 +1,10 @@
-function color_mask = filter_color_hist(image, color)
-    [num_rows num_cols ~] = size(image);
+% the red robot should be the top peak in the histogram of the red channel
+% (etc.) - this function attempts to find the robots in each channel via
+% adaptive thresholding
+% does not really work because the colors are faint in the second dataset
+% i.e. smoothing the histograms kills the robot-peak
+function color_mask = filter_color_adaptive(image, color)
+    [num_rows, num_col,  ~] = size(image);
     color_mask = zeros(num_rows, num_cols);
 
     if strcmpi(color, 'red')
@@ -55,6 +60,7 @@ function thresh = right_threshold(image_channel)
     thresh = valley_right;
 end
 
+
 function smooth_hist = smooth_histogram(hist, filterlen, sizeparam)
     [len ~] = size(hist);
 
@@ -64,6 +70,7 @@ function smooth_hist = smooth_histogram(hist, filterlen, sizeparam)
     convolution = conv(filter, hist);
     smooth_hist = convolution(1 + filterlen/2 : len + filterlen/2);
 end
+
 
 function x = gaussian_window(n, w)
     x = exp(-0.5 * (w / n * [-(n - 1) : 2  : n - 1]') .^ 2);

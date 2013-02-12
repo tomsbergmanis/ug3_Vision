@@ -1,3 +1,7 @@
+% generates a background image from a set of sample images
+% subtracting the background from the sample images eases object detection
+% does not work on these datasets because the blue/cyan robot does not move
+% for most of the images i.e. will be considered part of the background
 function background = median_filter(path, image_type, start_offset)
     if nargin < 2
         image_type = 'jpg';
