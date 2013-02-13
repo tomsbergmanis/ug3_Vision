@@ -26,10 +26,12 @@ function image_mask = filter_robot_colors(image)
         gN = rgbN(c,2);
         bN = rgbN(c,3);
         hue = hsv(c,1) * 360;
-        if      (normal_prob(rN, rN_mean, rN_sdev) < 0.0001) &&...
+        % I changed this prob by 10^-1 or so to get rid of some noise in 
+        %later images caused by blue robot
+        if      (normal_prob(rN, rN_mean, rN_sdev) < 0.00001) &&... 
                 (hue >= 330 || hue <= 30)
                     image_mask(c,1) = 1;
-        elseif  (normal_prob(gN, gN_mean, gN_sdev) < 0.001) &&...
+        elseif  (normal_prob(gN, gN_mean, gN_sdev) < 0.00001) &&...
                 (hue >= 90 && hue <= 150)
                    image_mask(c,2) = 1;
         elseif  (normal_prob(bN, bN_mean, bN_sdev) < 0.000001) &&...
@@ -37,10 +39,11 @@ function image_mask = filter_robot_colors(image)
                    image_mask(c,3) = 1;
         end
     end
-
+    
+   
     image_mask = reshape(image_mask, num_rows, num_cols, 3);
+   
 end
-
 
 function x = normal_prob(val, mu, sigma)
     x = 1.0 / (sigma * sqrt(2 * pi)) * exp(-(val - mu) ^ 2 / (2 * sigma ^ 2));
