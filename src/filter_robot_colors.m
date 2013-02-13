@@ -1,27 +1,40 @@
-function image_mask = filter_robot_colors(image, rgb_difference_threshold)
-    if nargin < 2
-        rgb_difference_threshold = 20;
-    end
-
+function image_mask = filter_robot_colors(image)
     [num_rows, num_cols, ~] = size(image);
     num_pixels = num_rows * num_cols;
-
-    image = double(reshape(image, num_pixels, 3));
     image_mask = zeros(num_pixels, 3);
 
+    rgb = double(reshape(image, num_pixels, 3));
+
+    rgbN = double(reshape(normalise_rgb(image), num_pixels, 3));
+    rN_sdev = std(rgbN(:,1));
+    gN_sdev = std(rgbN(:,2));
+    bN_sdev = std(rgbN(:,3));
+    rN_mean = mean(rgbN(:,1));
+    gN_mean = mean(rgbN(:,2));
+    bN_mean = mean(rgbN(:,3));
+
+    hsv = reshape(rgb2hsv(image), num_pixels, 3);
+    saturation_mean = mean(hsv(:,2));
+
     for c = 1 : num_pixels
-        r = image(c,1);
-        g = image(c,2);
-        b = image(c,3);
-        h = rgb2hue(r, g, b);
-        if is_red(h, r, g, b, rgb_difference_threshold)
-            image_mask(c,1) = 1;
-        elseif is_green(h, r, g, b, rgb_difference_threshold)
-           image_mask(c,2) = 1;
-        elseif is_blue(h, r, g, b, rgb_difference_threshold)
-           image_mask(c,3) = 1;
-        elseif is_cyan(h, r, g, b, rgb_difference_threshold)
-            image_mask(c,3) = 1;
+        % low saturation pixels are likely to be background pixels
+        saturation = hsv(c,2);
+        if saturation <= saturation_mean
+            continue;
+        end
+        rN = rgbN(c,1);
+        gN = rgbN(c,2);
+        bN = rgbN(c,3);
+        hue = hsv(c,1) * 360;
+        if      (normal_prob(rN, rN_mean, rN_sdev) < 0.0001) &&...
+                (hue >= 330 || hue <= 30)
+                    image_mask(c,1) = 1;
+        elseif  (normal_prob(gN, gN_mean, gN_sdev) < 0.001) &&...
+                (hue >= 90 && hue <= 150)
+                   image_mask(c,2) = 1;
+        elseif  (normal_prob(bN, bN_mean, bN_sdev) < 0.000001) &&...
+                (hue >= 150 && hue <= 270)
+                   image_mask(c,3) = 1;
         end
     end
 
@@ -29,40 +42,6 @@ function image_mask = filter_robot_colors(image, rgb_difference_threshold)
 end
 
 
-function hue = rgb2hue(r, g, b)
-    hue_rad = atan2(sqrt(3) * (g - b), 2 * r - g - b);
-    hue_deg = mod(hue_rad * 180 / pi, 360);
-    hue = round(hue_deg);
-end
-
-
-function rval = is_red(h, r, g, b, rgb_threshold)
-    thresh = rgb_threshold * 2.0;
-    hue_ok = h < 30 || h > 330;
-    rgb_ok = abs(r - g) > thresh && abs(r - b) > thresh;
-    rval = hue_ok && rgb_ok;
-end
-
-
-function rval = is_green(h, r, g, b, rgb_threshold)
-    thresh = rgb_threshold * 0.8;
-    hue_ok = h > 90 && h < 150;
-    rgb_ok = abs(g - r) > thresh && abs(g - b) > thresh;
-    rval = hue_ok && rgb_ok;
-end
-
-
-function rval = is_blue(h, r, g, b, rgb_threshold)
-    thresh = rgb_threshold * 1.0;
-    hue_ok = h > 210 && h < 270;
-    rgb_ok = abs(b - r) > thresh && abs(b - g) > thresh;
-    rval = hue_ok && rgb_ok;
-end
-
-
-function rval = is_cyan(h, r, g, b, rgb_threshold)
-    thresh = rgb_threshold * 1.0;
-    hue_ok = h > 150 && h < 210;
-    rgb_ok = abs(g - r) > thresh && abs(b - r) > thresh;
-    rval = hue_ok && rgb_ok;
+function x = normal_prob(val, mu, sigma)
+    x = 1.0 / (sigma * sqrt(2 * pi)) * exp(-(val - mu) ^ 2 / (2 * sigma ^ 2));
 end
