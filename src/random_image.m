@@ -1,18 +1,55 @@
-% returns a random image of type |image_type| found at |path|
-% if |path| is not specified, set it to a random folder in "ug3_Vision/data"
-function image = random_image(path, image_type)
-    if nargin < 1
-        path = random_dir('ug3_Vision', 'data');
+% returns a random image from some directory D and print the path to that image
+% the function understands the following options:
+%   'Quiet'             don't print the path to the image
+%   'ImageType', C      look for images of type C (default = "jpg")
+% any remaining parameters are taken to be the path to D
+% if D is not specified, default to a random sub-directory of "ug3_Vision/data"
+function image = random_image(varargin)
+    TL_DIR = 'ug3_Vision';
+    BRANCH_DIR = 'data';
+    % parse options
+    argc = length(varargin);
+    c = 1;
+    while c <= argc
+        arg = varargin{c};
+        if strcmpi(arg, 'Quiet')
+            quiet = 1;
+        elseif strcmpi(arg, 'ImageType')
+            if c + 1 > argc
+                error('ImageType option should be followed by a string');
+            end
+            image_type = varargin{c + 1};
+            c = c + 1;
+        else
+            path = arg;
+        end
+        c = c + 1;
     end
-    if nargin < 2
+    % option defaults
+    if ~exist('quiet', 'var')
+        quiet = 0;
+    end
+    if ~exist('image_type', 'var')
         image_type = '.jpg';
+    end
+    if ~exist('path', 'var')
+        path = random_dir(TL_DIR, BRANCH_DIR);
     end
 
     if ~strcmp(image_type(1), '.')
         image_type = strcat('.', image_type);
     end
 
-    image = imread(random_file(path, image_type));
+    image_path = random_file(path, image_type);
+    image = imread(image_path);
+
+    if ~quiet
+        idx = strfind(image_path, TL_DIR);
+        if isempty(idx)
+            idx = 1;
+        end
+        fprintf(1, 'image = %s\n', image_path(idx : end));
+    end
 end
 
 
@@ -20,7 +57,7 @@ end
 % returns the absolute path to one of the directories in |tl_dir|/|branch_dir|
 function path = random_dir(tl_dir, branch_dir)
     cur_path = mfilename('fullpath');
-    tl_path = cur_path(1:strfind(cur_path, tl_dir) + length(tl_dir));
+    tl_path = cur_path(1 : strfind(cur_path, tl_dir) + length(tl_dir));
     branch_path = strcat(tl_path, branch_dir);
     branch_path_contents = dir(branch_path);
     branch_path_dirs = {};
