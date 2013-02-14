@@ -5,7 +5,7 @@ function image_mask = filter_robot_colors(image)
 
     rgb = double(reshape(image, num_pixels, 3));
 
-    rgbN = double(reshape(normalise_rgb(image), num_pixels, 3));
+    rgbN = double(reshape(normalise_rgb(image, 'approximate'), num_pixels, 3));
     rN_sdev = std(rgbN(:,1));
     gN_sdev = std(rgbN(:,2));
     bN_sdev = std(rgbN(:,3));
@@ -17,7 +17,7 @@ function image_mask = filter_robot_colors(image)
     saturation_mean = mean(hsv(:,2));
 
     for c = 1 : num_pixels
-        % low saturation pixels are likely to be background pixels
+        % low saturation pixels are likely to be background pixels - skip them
         saturation = hsv(c,2);
         if saturation <= saturation_mean
             continue;
@@ -26,24 +26,25 @@ function image_mask = filter_robot_colors(image)
         gN = rgbN(c,2);
         bN = rgbN(c,3);
         hue = hsv(c,1) * 360;
-        % I changed this prob by 10^-1 or so to get rid of some noise in 
-        %later images caused by blue robot
-        if      (normal_prob(rN, rN_mean, rN_sdev) < 0.00001) &&... 
-                (hue >= 330 || hue <= 30)
+        % red
+        if      (hue >= 330 || hue <= 30) &&...
+                (normal_prob(rN, rN_mean, rN_sdev) < 0.00001)
                     image_mask(c,1) = 1;
-        elseif  (normal_prob(gN, gN_mean, gN_sdev) < 0.00001) &&...
-                (hue >= 90 && hue <= 150)
+        % green
+        elseif  (hue >= 90 && hue <= 150) &&...
+                (normal_prob(gN, gN_mean, gN_sdev) < 0.00001)
                    image_mask(c,2) = 1;
-        elseif  (normal_prob(bN, bN_mean, bN_sdev) < 0.000001) &&...
-                (hue >= 150 && hue <= 270)
+        % blue
+        elseif  (hue >= 150 && hue <= 270) &&...
+                (normal_prob(bN, bN_mean, bN_sdev) < 0.000001)
                    image_mask(c,3) = 1;
         end
     end
-    
    
     image_mask = reshape(image_mask, num_rows, num_cols, 3);
    
 end
+
 
 function x = normal_prob(val, mu, sigma)
     x = 1.0 / (sigma * sqrt(2 * pi)) * exp(-(val - mu) ^ 2 / (2 * sigma ^ 2));
