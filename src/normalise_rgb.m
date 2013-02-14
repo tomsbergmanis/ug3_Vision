@@ -5,13 +5,13 @@
 % {r, g, b} = {r, g, b} / (r + g + b) 
 % this is approximately two times faster than the exact normalisation
 function normalised_image = normalise_rgb(image, varargin)
-    approximate_normalisation = find(strcmpi(varargin, 'approximate'));
+    approximate = ~isempty(find(strcmpi(varargin, 'approximate')));
 
     red = double(image(:,:,1));
     green = double(image(:,:,2));
     blue = double(image(:,:,3));
 
-    if approximate_normalisation
+    if approximate
         euclid_rgb = red(:,:) + green(:,:) + blue(:,:);
     else
         euclid_rgb = sqrt(red(:,:).^2 + green(:,:).^2 + blue(:,:).^2);
