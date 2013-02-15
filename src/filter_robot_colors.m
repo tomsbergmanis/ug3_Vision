@@ -20,17 +20,15 @@ function image_mask = filter_robot_colors(image)
         gN = rgbN(c,2);
         bN = rgbN(c,3);
         hue = hsv(c,1) * 360;
-        saturation = hsv(c,2) * 100;
-        value = hsv(c,3) * 100;
-        % red
+        % current pixel is red
         if      (hue >= 330 || hue <= 30) &&...
                 (normal_prob(rN, rN_mean, rN_sdev) < 0.000001)
                     image_mask(c,1) = 1;
-        % green
+        % current pixel is green
         elseif  (hue >= 80 && hue < 150) &&...
                 (normal_prob(gN, gN_mean, gN_sdev) < 0.0001)
                    image_mask(c,2) = 1;
-        % blue
+        % current pixel is blue
         elseif  (hue >= 150 && hue <= 270) &&...
                 (normal_prob(bN, bN_mean, bN_sdev) < 0.0000001)
                    image_mask(c,3) = 1;
@@ -38,7 +36,9 @@ function image_mask = filter_robot_colors(image)
     end
    
     image_mask = reshape(image_mask, num_rows, num_cols, 3);
-    image_mask = clean(image_mask);
+
+    image_mask = remove_noise(image_mask);
+    image_mask = enforce_similar_channel_areas(image_mask);
 end
 
 
@@ -47,19 +47,27 @@ function x = normal_prob(val, mu, sigma)
 end
 
 
-function image = clean(image, area_proportion_threshold)
-    if nargin < 2
-        area_proportion_threshold = 0.125;
-    end
-
-    [num_rows, num_cols, num_channels] = size(image);
+function image = remove_noise(image)
+    [~, ~, num_channels] = size(image);
     for c = 1 : num_channels
         channel = image(:,:,c);
         channel = bwmorph(channel, 'majority', Inf);
         channel = bwmorph(channel, 'bridge', Inf);
         image(:,:,c) = channel;
     end
-    % make sure that all robots are about the same size
+end
+
+
+% we know that the robots are all about the same size - we can thus remove any
+% channels in the mask that have a much smaller area than the other channels
+% this catches some problems like the shadow of the blue robot in 
+% data/1/00000095.jpg being detected as a red blob
+function image = enforce_similar_channel_areas(image, area_proportion_threshold)
+    if nargin < 2
+        area_proportion_threshold = 0.125;
+    end
+
+    [~, ~, num_channels] = size(image);
     areas = zeros(num_channels, 1);
     for c = 1 : num_channels
         channel = image(:,:,c);

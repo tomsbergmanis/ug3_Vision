@@ -1,15 +1,18 @@
-% creates a grayscale version of |image| and darkens it by |gray_level|
-% returns the result of overlaying |mask| to the grayscale image
-function image = overlay_mask(image, mask, gray_level)
-    if nargin < 3
-        gray_level = 0.3;
-    end
-
-    grayscale = rgb2gray(image) * gray_level;
-    image = cat(3, grayscale, grayscale, grayscale);
-    for c = 1 : 3
+% returns the result of putting |mask| onto |image|
+% for each pixel that is set in some channel of |mask|, saturates the pixel in
+% the equivalent channel of |image|
+function image = overlay_mask(image, mask)
+    [~, ~, num_channels] = size(image);
+    channels = 1 : num_channels;
+    for c = 1 : num_channels
         channel = image(:,:,c);
-        channel(mask(:,:,c) == 1) = 255;
+        mask_pixels = find(mask(:,:,c) == 1);
+        channel(mask_pixels) = 255;
         image(:,:,c) = channel;
+        for d = setdiff(channels, c)
+            channel = image(:,:,d);
+            channel(mask_pixels) = 0;
+            image(:,:,d) = channel;
+        end
     end
 end
