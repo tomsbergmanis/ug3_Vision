@@ -16,9 +16,19 @@ function normalised_image = normalise_rgb(image, varargin)
     else
         euclid_rgb = sqrt(red(:,:).^2 + green(:,:).^2 + blue(:,:).^2);
     end
-    norm_red = round(red(:,:) ./ euclid_rgb .* 255);
-    norm_green = round(green(:,:) ./ euclid_rgb .* 255);
-    norm_blue = round(blue(:,:) ./ euclid_rgb .* 255);
+    red_norm = round(red(:,:) ./ euclid_rgb .* 255);
+    green_norm = round(green(:,:) ./ euclid_rgb .* 255);
+    blue_norm = round(blue(:,:) ./ euclid_rgb .* 255);
+    
+    % some pixels are absolute black (r = g = b = 0) which causes division by
+    % zero errors during normalisation and NaN values in the normalised channels
+    % need to filter these values out
+    red_norm(isnan(red_norm)) = 0;
+    green_norm(isnan(green_norm)) = 0;
+    blue_norm(isnan(blue_norm)) = 0;
 
-    normalised_image = cat(3, norm_red, norm_green, norm_blue);
+    red_norm = uint8(red_norm);
+    green_norm = uint8(green_norm);
+    blue_norm = uint8(blue_norm);
+    normalised_image = cat(3, red_norm, green_norm, blue_norm);
 end

@@ -6,12 +6,12 @@ function image_mask = filter_robot_colors(image)
     rgb = double(reshape(image, num_pixels, 3));
 
     rgbN = double(reshape(normalise_rgb(image, 'approximate'), num_pixels, 3));
-    rN_sdev = std(rgbN(:,1));
-    gN_sdev = std(rgbN(:,2));
-    bN_sdev = std(rgbN(:,3));
-    rN_mean = mean(rgbN(:,1));
-    gN_mean = mean(rgbN(:,2));
-    bN_mean = mean(rgbN(:,3));
+    rN_sdev = std(rgbN(:,1))
+    gN_sdev = std(rgbN(:,2))
+    bN_sdev = std(rgbN(:,3))
+    rN_mean = mean(rgbN(:,1))
+    gN_mean = mean(rgbN(:,2))
+    bN_mean = mean(rgbN(:,3))
 
     hsv = reshape(rgb2hsv(image), num_pixels, 3);
     saturation_mean = mean(hsv(:,2));
@@ -27,7 +27,7 @@ function image_mask = filter_robot_colors(image)
                     image_mask(c,1) = 1;
         % green
         elseif  (hue >= 90 && hue <= 150) &&...
-                (normal_prob(gN, gN_mean, gN_sdev) < 0.0001)
+                (normal_prob(gN, gN_mean, gN_sdev) < 0.001)
                    image_mask(c,2) = 1;
         % blue
         elseif  (hue >= 150 && hue <= 270) &&...
