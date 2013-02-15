@@ -17,11 +17,6 @@ function image_mask = filter_robot_colors(image)
     saturation_mean = mean(hsv(:,2));
 
     for c = 1 : num_pixels
-        % low saturation pixels are likely to be background pixels - skip them
-        saturation = hsv(c,2);
-        if saturation <= saturation_mean
-            continue;
-        end
         rN = rgbN(c,1);
         gN = rgbN(c,2);
         bN = rgbN(c,3);
