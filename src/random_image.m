@@ -4,7 +4,7 @@
 %   'ImageType', C      look for images of type C (default = "jpg")
 % any remaining parameters are taken to be the path to D
 % if D is not specified, default to a random sub-directory of "ug3_Vision/data"
-function image = random_image(varargin)
+function [image, varargout] = random_image(varargin)
     TL_DIR = 'ug3_Vision';
     BRANCH_DIR = 'data';
     % parse options
@@ -50,6 +50,7 @@ function image = random_image(varargin)
         end
         fprintf(1, 'image = %s\n', image_path(idx : end));
     end
+    varargout{1} = image_path;
 end
 
 
