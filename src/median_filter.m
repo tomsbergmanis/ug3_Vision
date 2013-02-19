@@ -2,7 +2,7 @@
 % subtracting the background from the sample images eases object detection
 % does not work on these datasets because the blue/cyan robot does not move
 % for most of the images i.e. will be considered part of the background
-function background = median_filter(path, image_type, start_offset)
+function background = median_filter(path, image_type, start_offset, step)
     if nargin < 2
         image_type = 'jpg';
     end
@@ -19,7 +19,7 @@ function background = median_filter(path, image_type, start_offset)
     reds = cell(num_files - start_offset, 1);
     greens = cell(num_files - start_offset, 1);
     blues = cell(num_files - start_offset, 1);
-    for c = 1 + start_offset : num_files
+    for c = 1 + start_offset :step: num_files
         image = imread(sprintf('%s/%s', path, filenames{c}));
         reds{c} = image(:,:,1);
         greens{c} = image(:,:,2);
