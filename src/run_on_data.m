@@ -13,8 +13,9 @@ end
 if ~exist('OUT_DIR', 'var')
     OUT_DIR = fullfile('res', strrep(FILTER_FN, '_', '-'));
 end
-
+filter_fn = str2func(FILTER_FN);
 disp(sprintf('function: %s\ninput: %s\n', FILTER_FN, fullfile(TL_DIR, IN_DIR)));
+
 curpath = mfilename('fullpath');
 tlpath = curpath(1 : strfind(curpath, TL_DIR) + length(TL_DIR));
 inpath = strcat(tlpath, IN_DIR);
@@ -28,9 +29,9 @@ for c = 1 : length(inpath_contents)
     end
     inpath_dirs{end + 1} = fullfile(inpath, elem.name);
 end
+
 num_dirs = length(inpath_dirs);
 times = [];
-filter_fn = str2func(FILTER_FN);
 for c = 1 : num_dirs
     in_dir = inpath_dirs{c};
     files = dir(strcat(in_dir, filesep, '*.jpg'));
@@ -56,4 +57,5 @@ for c = 1 : num_dirs
         disp(sprintf('\tprocessing time = %fs', elapsed));
     end
 end
+
 disp(sprintf('\naverage processing time per image: %fs', mean(times)));

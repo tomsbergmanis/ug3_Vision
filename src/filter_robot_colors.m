@@ -26,11 +26,11 @@ function image_mask = filter_robot_colors(image)
                     image_mask(c,1) = 1;
         % current pixel is green
         elseif  (hue >= 80 && hue < 150) &&...
-                (normal_prob(gN, gN_mean, gN_sdev) < 0.0001)
+                (normal_prob(gN, gN_mean, gN_sdev) < 0.005)
                    image_mask(c,2) = 1;
         % current pixel is blue
         elseif  (hue >= 150 && hue <= 270) &&...
-                (normal_prob(bN, bN_mean, bN_sdev) < 0.0000001)
+                (normal_prob(bN, bN_mean, bN_sdev) < 0.0000075)
                    image_mask(c,3) = 1;
         end
     end
@@ -75,15 +75,15 @@ function image = remove_outliers(image, distance_proportion_threshold)
         channel = image(:,:,c);
         % skip empty channels
         if ~any(channel(:))
-            continue
+            continue;
         end
         channel_properties = regionprops(channel, 'Centroid');
         channel_centroid = channel_properties.Centroid;
         regions = bwconncomp(channel);
         regions_properties = regionprops(regions, 'Centroid', 'PixelIdxList');
-        % no need to optimize if there is only one connected component
+        % skip channels with only one connected component
         if length(regions_properties) < 2
-            continue
+            continue;
         end
         regions_centroids = {regions_properties.Centroid};
         distances = cellfun(@(x) norm(x - channel_centroid), regions_centroids);
