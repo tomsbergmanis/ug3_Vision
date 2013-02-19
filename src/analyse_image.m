@@ -1,4 +1,29 @@
-function image_mask = filter_robot_colors(image)
+function [color_mask, varargout] = analyse_image(image)
+    [num_rows, num_cols, num_channels] = size(image);
+
+    color_mask = get_color_mask(image);
+
+    centroids = zeros(num_channels, 2);
+    convex_centroids = zeros(num_channels, 2);
+    for c = 1 : num_channels
+        channel = color_mask(:,:,c);
+        if ~any(channel(:))
+            continue;
+        end
+        props = regionprops(channel, 'Centroid', 'ConvexImage', 'BoundingBox');
+        convex_props = regionprops(props.ConvexImage, 'Centroid');
+        convex_centroid = convex_props.Centroid;
+        convex_centroid = [convex_centroid(2) + props.BoundingBox(2), ...
+                           convex_centroid(1) + props.BoundingBox(1)];
+        convex_centroids(c,:) = convex_centroid;
+        centroids(c,:) = [props.Centroid(2), props.Centroid(1)];
+    end
+    varargout{1} = centroids;
+    varargout{2} = convex_centroids;
+end
+
+
+function image_mask = get_color_mask(image)
     [num_rows, num_cols, ~] = size(image);
     num_pixels = num_rows * num_cols;
     image_mask = zeros(num_pixels, 3);

@@ -8,7 +8,7 @@ if ~exist('IN_DIR', 'var')
     IN_DIR = 'data';
 end
 if ~exist('FILTER_FN', 'var')
-    FILTER_FN = 'filter_robot_colors';
+    FILTER_FN = 'analyse_image';
 end
 if ~exist('OUT_DIR', 'var')
     OUT_DIR = fullfile('res', strrep(FILTER_FN, '_', '-'));

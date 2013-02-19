@@ -2,10 +2,13 @@
 % [0, 0] is the top left corner of the image
 function image = overlay_polygon(image, points, color)
     if nargin < 3
-        color = [0 0 0];
+        color = [255 255 255];
     end
     
-    for c = 1 : length(color)
+    points = round(points);
+
+    [~, ~, num_channels] = size(image);
+    for c = 1 : num_channels
         channel = image(:,:,c);
         channel = overlay_polygon_channel(channel, points, color(c));
         image(:,:,c) = channel;
