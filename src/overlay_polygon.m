@@ -1,25 +1,17 @@
-% returns image with a line drawn from |start| = [x0, y0] to |stop| = [x1, y1]
+% returns image with a lines drawn from the nth point in |points| to the n+1th
 % [0, 0] is the top left corner of the image
-function image = overlay_line(image, start, stop, thickness, color)
-    if nargin < 4
-        thickness = 1;
-    end
-    if nargin < 5
+function image = overlay_polygon(image, points, color)
+    if nargin < 3
         color = [0 0 0];
     end
     
-    for c = 0 : thickness
-        Xi = start(1) + ceil(c / 2) * (-1) ^ (c + 1);
-        Xf = stop(1) + ceil(c / 2) * (-1) ^ (c + 1);
-        image = overlay_line_thin(image, [Xi start(2)], [Xf stop(2)], color);
-    end
-end
-
-
-function image = overlay_line_thin(image, start, stop, color)
     for c = 1 : length(color)
         channel = image(:,:,c);
-        channel = overlay_line_channel(channel, start, stop, color(c));
+        for d = 1 : length(points) - 1
+            start = points(d,:);
+            stop = points(d + 1,:);
+            channel = overlay_line_channel(channel, start, stop, color(c));
+        end
         image(:,:,c) = channel;
     end
 end
