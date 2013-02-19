@@ -73,10 +73,18 @@ function image = remove_outliers(image, distance_proportion_threshold)
     [~, ~, num_channels] = size(image);
     for c = 1 : num_channels
         channel = image(:,:,c);
+        % skip empty channels
+        if ~any(channel(:))
+            continue
+        end
         channel_properties = regionprops(channel, 'Centroid');
         channel_centroid = channel_properties.Centroid;
         regions = bwconncomp(channel);
         regions_properties = regionprops(regions, 'Centroid', 'PixelIdxList');
+        % no need to optimize if there is only one connected component
+        if length(regions_properties) < 2
+            continue
+        end
         regions_centroids = {regions_properties.Centroid};
         distances = cellfun(@(x) norm(x - channel_centroid), regions_centroids);
         mean_distance = mean(distances);
