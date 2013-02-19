@@ -34,10 +34,11 @@ function image_mask = filter_robot_colors(image)
                    image_mask(c,3) = 1;
         end
     end
-   
+
     image_mask = reshape(image_mask, num_rows, num_cols, 3);
 
     image_mask = remove_noise(image_mask);
+    image_mask = remove_outliers(image_mask);
     image_mask = enforce_similar_channel_areas(image_mask);
 end
 
@@ -53,6 +54,38 @@ function image = remove_noise(image)
         channel = image(:,:,c);
         channel = bwmorph(channel, 'majority', Inf);
         channel = bwmorph(channel, 'bridge', Inf);
+        image(:,:,c) = channel;
+    end
+end
+
+
+% finds the connected components in each channel of |image| and removes those
+% that are far away from the centroid of the pixels in that channel
+% here, 'far away' means more distant than |distance_proprtion_threshold| times
+% the average distance of each connected component to the channel centroid
+% this removes big areas of noise such as the big green blob inside of the black
+% arrow of the red robot in data/1/00000006.jpg
+function image = remove_outliers(image, distance_proportion_threshold)
+    if nargin < 2
+        distance_proportion_threshold = 1.0;
+    end
+
+    [~, ~, num_channels] = size(image);
+    for c = 1 : num_channels
+        channel = image(:,:,c);
+        channel_properties = regionprops(channel, 'Centroid');
+        channel_centroid = channel_properties.Centroid;
+        regions = bwconncomp(channel);
+        regions_properties = regionprops(regions, 'Centroid', 'PixelIdxList');
+        regions_centroids = {regions_properties.Centroid};
+        distances = cellfun(@(x) norm(x - channel_centroid), regions_centroids);
+        mean_distance = mean(distances);
+        for d = 1 : length(distances)
+            if distances(d) > mean_distance * distance_proportion_threshold
+                idx = regions_properties(d).PixelIdxList;
+                channel(idx) = 0;
+            end
+        end
         image(:,:,c) = channel;
     end
 end
