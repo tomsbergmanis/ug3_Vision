@@ -1,3 +1,8 @@
+% extracts all the relevant information from an image
+% 1) a mask where pixels in channel 1 are set to 1 iif they belong to the red
+% robot (and similarly for channel 2/green robot and channel 3/blue robot)
+% 2) an array with the centroids of the pixels in the mask
+% 3) an array with the centroids of the convex hulls of the pixels in the mask
 function [color_mask, varargout] = analyse_image(image)
     [num_rows, num_cols, num_channels] = size(image);
 
