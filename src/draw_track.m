@@ -32,13 +32,13 @@ function res = draw_track(path, image_type, start_offset)
         g = uint16(centroids(2,:));
         if g(1)>0 && g(2)>0
             bg=draw_center(bg,2, g(1),g(2));
-            rc(i,:)=[g(1),g(2)];
+            gc(i,:)=[g(1),g(2)];
         end
 
  	    b = uint16(centroids(3,:));
         if b(1)>0 && b(2)>0
             bg=draw_center(bg,3, b(1),b(2));
-            rc(i,:)=[b(1),b(2)];
+            bc(i,:)=[b(1),b(2)];
         end
     end
     
