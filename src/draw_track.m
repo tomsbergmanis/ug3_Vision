@@ -21,27 +21,24 @@ function res = draw_track(path, image_type, start_offset)
        
     for i = 1 + start_offset : num_files
         image = imread(sprintf('%s/%s', path, filenames{i}));
-        mask=filter_robot_colors(image);
+       	[~, centroids] = analyse_image(image);
                             
-        rcentroid = regionprops(mask(:,:,1), 'Centroid');
-        if numel(rcentroid)
-            r = uint16(rcentroid.Centroid);
-            bg=draw_center(bg,1, r(2),r(1));
-            rc(i,:)=[r(2),r(1)];
+        r = uint16(centroids(1,:));
+        if r(1)>0 && r(2)>0
+            bg=draw_center(bg,1, r(1),r(2));
+            rc(i,:)=[r(1),r(2)];
         end
         
-        gcentroid = regionprops(mask(:,:,2), 'Centroid');
-        if numel(gcentroid)
-            g = uint16(gcentroid.Centroid);
-            bg=draw_center(bg,2, g(2),g(1));
-            gc(i,:)=[g(2),g(1)];
+        g = uint16(centroids(2,:));
+        if g(1)>0 && g(2)>0
+            bg=draw_center(bg,2, g(1),g(2));
+            rc(i,:)=[g(1),g(2)];
         end
-        
-        bcentroid = regionprops(mask(:,:,3), 'Centroid');
-        if  numel(gcentroid)
-            b = uint16(bcentroid.Centroid);
-            bg=draw_center(bg,3, b(2), b(1));
-            bc(i,:)=[b(2),b(1)];
+
+ 	    b = uint16(centroids(3,:));
+        if b(1)>0 && b(2)>0
+            bg=draw_center(bg,3, b(1),b(2));
+            rc(i,:)=[b(1),b(2)];
         end
     end
     
