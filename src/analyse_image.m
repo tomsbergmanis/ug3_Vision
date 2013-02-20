@@ -6,12 +6,13 @@
 function [color_mask, varargout] = analyse_image(image)
     [num_rows, num_cols, num_channels] = size(image);
 
-    color_mask = get_color_mask(image);
+    color_mask_ugly = get_color_mask(image);
+    color_mask = zeros(num_rows, num_cols, num_channels);
 
     centroids = zeros(num_channels, 2);
     convex_centroids = zeros(num_channels, 2);
     for c = 1 : num_channels
-        channel = color_mask(:,:,c);
+        channel = color_mask_ugly(:,:,c);
         if ~any(channel(:))
             continue;
         end
@@ -22,9 +23,24 @@ function [color_mask, varargout] = analyse_image(image)
                            convex_centroid(1) + props.BoundingBox(1)];
         convex_centroids(c,:) = convex_centroid;
         centroids(c,:) = [props.Centroid(2), props.Centroid(1)];
+        convex_image = props.ConvexImage;
+        [num_rows_convex, num_cols_convex] = size(convex_image);
+        for row = 1 : num_rows_convex
+            for col = 1 : num_cols_convex
+                if convex_image(row, col) == 1
+                    newrow = round(row + props.BoundingBox(2));
+                    newcol = round(col + props.BoundingBox(1));
+                    color_mask(newrow, newcol, c) = 1;
+                end
+            end
+        end
+        color_mask(:,:,c) = bwmorph(color_mask(:,:,c), 'remove');
     end
+    color_mask = overlay_rays(color_mask, centroids, convex_centroids, 100, ...
+                              'Color', [1 0 0; 0 1 0; 0 0 1]);
     varargout{1} = centroids;
     varargout{2} = convex_centroids;
+    varargout{3} = color_mask_ugly;
 end
 
 
