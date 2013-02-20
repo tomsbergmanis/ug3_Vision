@@ -50,19 +50,17 @@ function image_mask = get_color_mask(image)
         gN = rgbN(c,2);
         bN = rgbN(c,3);
         hue = hsv(c,1) * 360;
-        v = hsv(c,3) * 100;
         % current pixel is red
-        if      (hue >= 330 || hue <= 30) && (v>=15) && ...
-                (normal_prob(rN, rN_mean, rN_sdev) <  0.00001)
-                
+        if      (hue >= 330 || hue <= 30) &&...
+                (normal_prob(rN, rN_mean, rN_sdev) < 0.0001)
                     image_mask(c,1) = 1;
         % current pixel is green
-        elseif  (hue >= 80 && hue < 200) && (v>=20) && ...
-                (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
+        elseif  (hue >= 80 && hue < 180) &&...
+                (normal_prob(gN, gN_mean, gN_sdev) < 0.005)
                    image_mask(c,2) = 1;
         % current pixel is blue
-        elseif  (hue >= 200 && hue <= 260) && (v>=26) && ...
-                (normal_prob(bN, bN_mean, bN_sdev) < 0.0000075)
+        elseif  (hue >= 200 && hue <= 260) &&...
+                (normal_prob(bN, bN_mean, bN_sdev) < 0.000000005)
                    image_mask(c,3) = 1;
         end
     end
@@ -70,7 +68,7 @@ function image_mask = get_color_mask(image)
     image_mask = reshape(image_mask, num_rows, num_cols, 3);
 
     image_mask = remove_noise(image_mask);
-    %image_mask = remove_outliers(image_mask);
+    image_mask = remove_outliers(image_mask);
     image_mask = enforce_similar_channel_areas(image_mask);
 end
 
