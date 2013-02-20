@@ -25,7 +25,7 @@ inpath_dirs = {};
 for c = 1 : length(inpath_contents)
     elem = inpath_contents(c);
     if ~elem.isdir || strcmp(elem.name, '.') || strcmp(elem.name, '..')
-        continue
+        continue;
     end
     inpath_dirs{end + 1} = fullfile(inpath, elem.name);
 end
@@ -48,11 +48,13 @@ for c = 1 : num_dirs
         disp(sprintf('\tinput = %s', input(strfind(input, TL_DIR) : end)));
         image = imread(input);
         timer = tic;
-        mask = filter_fn(image);
+        [mask, ~, ~, mask2] = filter_fn(image);
         elapsed = toc(timer);
         times(end + 1) = elapsed;
         output = fullfile(out_dir, file_name);
-        imwrite(overlay_mask(image, mask), output, 'jpg');
+        iamge = overlay_mask(image, mask, 'Saturation', 0.5);
+        image = overlay_mask(image, mask2);
+        imwrite(image, output, 'jpg');
         disp(sprintf('\toutput = %s', output(strfind(input, TL_DIR) : end)));
         disp(sprintf('\tprocessing time = %fs', elapsed));
     end

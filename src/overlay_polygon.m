@@ -7,7 +7,7 @@ function image = overlay_polygon(image, points, color)
     
     points = round(points);
 
-    [~, ~, num_channels] = size(image);
+    num_channels = size(image, 3);
     for c = 1 : num_channels
         channel = image(:,:,c);
         channel = overlay_polygon_channel(channel, points, color(c));
@@ -19,6 +19,7 @@ end
 % Bresenham's line algorithm (simplified version)
 % http://en.wikipedia.org/wiki/Bresenham's_line_algorithm#Simplification
 function channel = overlay_polygon_channel(channel, points, color)
+    [xmax, ymax] = size(channel);
     for c = 1 : length(points) - 1
         start = points(c,:);
         stop = points(c + 1,:);
@@ -44,7 +45,9 @@ function channel = overlay_polygon_channel(channel, points, color)
         err = dx - dy;
 
         while 1
-            channel(x0, y0) = color;
+            if x0 > 0 && x0 <= xmax && y0 > 0 && y0 <= ymax
+                channel(x0, y0) = color;
+            end
             if x0 == x1 && y0 == y1
                 break;
             end
