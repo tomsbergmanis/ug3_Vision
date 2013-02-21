@@ -52,7 +52,7 @@ for c = 1 : num_dirs
         elapsed = toc(timer);
         times(end + 1) = elapsed;
         output = fullfile(out_dir, file_name);
-        iamge = overlay_mask(image, mask, 'Saturation', 0.5);
+        image = overlay_mask(image, mask, 'Saturation', 0.5);
         image = overlay_mask(image, mask2);
         imwrite(image, output, 'jpg');
         disp(sprintf('\toutput = %s', output(strfind(input, TL_DIR) : end)));

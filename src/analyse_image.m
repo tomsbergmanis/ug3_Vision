@@ -67,18 +67,26 @@ function image_mask = get_color_mask(image)
         gN = rgbN(c,2);
         bN = rgbN(c,3);
         hue = hsv(c,1) * 360;
-        v = hsv(c,3) * 100;
+        value = hsv(c,3) * 100;
         % current pixel is red
-        if      (hue >= 330 || hue <= 30) && (v>=15) && ...
+        if      (hue >= 330 || hue <= 30) && ...
+                (value >= 15) && ...
                 (normal_prob(rN, rN_mean, rN_sdev) <  0.00001)
                 
                     image_mask(c,1) = 1;
         % current pixel is green
-        elseif  (hue >= 80 && hue < 150) && (v>=20) && ...
+        elseif  (hue >= 80 && hue < 150) && ...
+		(value >= 20) && ...
                 (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
                    image_mask(c,2) = 1;
         % current pixel is blue
-        elseif  (hue >= 150 && hue <= 270) && (v>=26) && ...
+        elseif  (hue >= 80 && hue < 150) && ...
+                (value >= 20) && ...
+                (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
+                   image_mask(c,2) = 1;
+        % current pixel is blue
+        elseif  (hue >= 150 && hue <= 270) && ...
+                (value >= 26) && ...
                 (normal_prob(bN, bN_mean, bN_sdev) < 0.0000075)
                    image_mask(c,3) = 1;
         end
@@ -87,7 +95,7 @@ function image_mask = get_color_mask(image)
     image_mask = reshape(image_mask, num_rows, num_cols, 3);
 
     image_mask = remove_noise(image_mask);
-    %image_mask = remove_outliers(image_mask);
+    image_mask = remove_outliers(image_mask);
     image_mask = enforce_similar_channel_areas(image_mask);
 end
 
@@ -116,7 +124,7 @@ end
 % arrow of the red robot in data/1/00000006.jpg
 function image = remove_outliers(image, distance_proportion_threshold)
     if nargin < 2
-        distance_proportion_threshold = 1.0;
+        distance_proportion_threshold = 2.0;
     end
 
     [~, ~, num_channels] = size(image);
@@ -130,10 +138,6 @@ function image = remove_outliers(image, distance_proportion_threshold)
         channel_centroid = channel_properties.Centroid;
         regions = bwconncomp(channel);
         regions_properties = regionprops(regions, 'Centroid', 'PixelIdxList');
-        % skip channels with only one connected component
-        if length(regions_properties) < 2
-            continue;
-        end
         regions_centroids = {regions_properties.Centroid};
         distances = cellfun(@(x) norm(x - channel_centroid), regions_centroids);
         mean_distance = mean(distances);
@@ -154,22 +158,28 @@ end
 % data/1/00000095.jpg being detected as a red blob
 function image = enforce_similar_channel_areas(image, area_proportion_threshold)
     if nargin < 2
-        area_proportion_threshold = 0.125;
+        area_proportion_threshold = 0.5;
     end
 
     [~, ~, num_channels] = size(image);
     areas = zeros(num_channels, 1);
     for c = 1 : num_channels
         channel = image(:,:,c);
-        region_props = regionprops(channel, 'Area');
-        if length(region_props) > 0
-            areas(c) = region_props.Area;
+        if ~any(channel(:))
+            continue;
         end
+        region_props = regionprops(channel, 'Area');
+        areas(c) = region_props.Area;
     end
-    avg_area = mean(areas(areas > 0));
+    max_area = max(areas(areas > 0));
     for c = 1 : num_channels
-        if areas(c) < avg_area * area_proportion_threshold
-            image(:,:,c) = image(:,:,c) * 0;
+        area = areas(c);
+        if area == 0
+            continue;
+        end
+        if  (area < max_area * area_proportion_threshold) || ...
+            (area > max_area / area_proportion_threshold)
+                image(:,:,c) = image(:,:,c) * 0;
         end
     end
 end
