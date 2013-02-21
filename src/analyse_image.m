@@ -60,6 +60,9 @@ function image_mask = get_color_mask(image)
     bN_mean = mean(rgbN(:,3));
 
     hsv = reshape(rgb2hsv(image), num_pixels, 3);
+    value_hist = histc(hsv(:,3) * 100, 0:100);
+    value_hist = smooth_histogram(value_hist, 4, 2);
+    value_threshold = threshold_histogram(value_hist);
 
     for c = 1 : num_pixels
         rN = rgbN(c,1);
@@ -67,20 +70,19 @@ function image_mask = get_color_mask(image)
         bN = rgbN(c,3);
         hue = hsv(c,1) * 360;
         value = hsv(c,3) * 100;
+        if value < value_threshold
+            continue;
+        end
         % current pixel is red
         if      (hue >= 330 || hue <= 30) && ...
-                (value >= 15) && ...
                 (normal_prob(rN, rN_mean, rN_sdev) <  0.00001)
-                
                     image_mask(c,1) = 1;
         % current pixel is green
         elseif  (hue >= 80 && hue < 150) && ...
-                (value >= 20) && ...
                 (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
                    image_mask(c,2) = 1;
         % current pixel is blue
         elseif  (hue >= 150 && hue <= 270) && ...
-                (value >= 26) && ...
                 (normal_prob(bN, bN_mean, bN_sdev) < 0.0000075)
                    image_mask(c,3) = 1;
         end
