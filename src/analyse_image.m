@@ -60,7 +60,8 @@ function image_mask = get_color_mask(image)
     bN_mean = mean(rgbN(:,3));
 
     hsv = reshape(rgb2hsv(image), num_pixels, 3);
-
+    mv=mean(hsv(:,3))
+    ms=mean(hsv(:,2))
     for c = 1 : num_pixels
         rN = rgbN(c,1);
         gN = rgbN(c,2);
@@ -73,11 +74,11 @@ function image_mask = get_color_mask(image)
                 
                     image_mask(c,1) = 1;
         % current pixel is green
-        elseif  (hue >= 80 && hue < 200) && (v>=20) && ...
+        elseif  (hue >= 80 && hue < 150) && (v>=20) && ...
                 (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
                    image_mask(c,2) = 1;
         % current pixel is blue
-        elseif  (hue >= 200 && hue <= 260) && (v>=26) && ...
+        elseif  (hue >= 150 && hue <= 270) && (v>=26) && ...
                 (normal_prob(bN, bN_mean, bN_sdev) < 0.0000075)
                    image_mask(c,3) = 1;
         end
