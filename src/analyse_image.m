@@ -124,7 +124,6 @@ function image = remove_outliers(image, distance_proportion_threshold)
     [~, ~, num_channels] = size(image);
     for c = 1 : num_channels
         channel = image(:,:,c);
-        % skip empty channels
         if ~any(channel(:))
             continue;
         end
