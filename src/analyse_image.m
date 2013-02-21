@@ -1,15 +1,40 @@
-% extracts all the relevant information from an image
-% 1) a mask where pixels in channel 1 are set to 1 iif they belong to the red
-% robot (and similarly for channel 2/green robot and channel 3/blue robot)
-% 2) an array with the centroids of the pixels in the mask
-% 3) an array with the centroids of the convex hulls of the pixels in the mask
-function [color_mask, varargout] = analyse_image(image)
+function mask = analyse_image(image)
+    [num_rows, num_cols, num_channels] = size(image);
+    [mask, convex_centroids] = mask_convex_regions(image);
+    mask = demask_triangles(image, mask);
+end
+
+
+function mask = demask_triangles(image, mask)
+    [num_rows, num_cols, num_channels] = size(image);
+    for c = 1 : num_channels
+        channel_mask = mask(:,:,c);
+        num_rgb = sum(channel_mask(:));
+        channel = image(:,:,c);
+        rgb_values = zeros(num_rgb, 1);
+        idx = 1;
+        for nr = 1 : num_rows
+            for nc = 1 : num_cols
+                if channel_mask(nr, nc) == 0
+                    continue;
+                end
+                rgb_values(idx) = channel(nr, nc);
+                idx = idx + 1;
+            end
+        end
+        mean_rgb = mean(rgb_values(:));
+        channel_mask(channel < mean_rgb) = 0;
+        mask(:,:,c) = channel_mask;
+    end
+end
+
+
+function [color_mask, varargout] = mask_convex_regions(image)
     [num_rows, num_cols, num_channels] = size(image);
 
-    color_mask_ugly = get_color_mask(image);
+    color_mask_ugly = mask_colors(image);
     color_mask = zeros(num_rows, num_cols, num_channels);
 
-    centroids = zeros(num_channels, 2);
     convex_centroids = zeros(num_channels, 2);
     for c = 1 : num_channels
         channel = color_mask_ugly(:,:,c);
@@ -22,7 +47,6 @@ function [color_mask, varargout] = analyse_image(image)
         convex_centroid = [convex_centroid(2) + props.BoundingBox(2), ...
                            convex_centroid(1) + props.BoundingBox(1)];
         convex_centroids(c,:) = convex_centroid;
-        centroids(c,:) = [props.Centroid(2), props.Centroid(1)];
         convex_image = props.ConvexImage;
         [num_rows_convex, num_cols_convex] = size(convex_image);
         for row = 1 : num_rows_convex
@@ -34,17 +58,12 @@ function [color_mask, varargout] = analyse_image(image)
                 end
             end
         end
-        color_mask(:,:,c) = bwmorph(color_mask(:,:,c), 'remove');
     end
-    color_mask = overlay_rays(color_mask, centroids, convex_centroids, 100, ...
-                              'Color', [1 0 0; 0 1 0; 0 0 1]);
-    varargout{1} = centroids;
-    varargout{2} = convex_centroids;
-    varargout{3} = color_mask_ugly;
+    varargout{1} = convex_centroids;
 end
 
 
-function image_mask = get_color_mask(image)
+function image_mask = mask_colors(image)
     [num_rows, num_cols, ~] = size(image);
     num_pixels = num_rows * num_cols;
     image_mask = zeros(num_pixels, 3);
@@ -60,9 +79,6 @@ function image_mask = get_color_mask(image)
     bN_mean = mean(rgbN(:,3));
 
     hsv = reshape(rgb2hsv(image), num_pixels, 3);
-    value_hist = histc(hsv(:,3) * 100, 0:100);
-    value_hist = smooth_histogram(value_hist, 4, 2);
-    value_threshold = threshold_histogram(value_hist);
   
     for c = 1 : num_pixels
         rN = rgbN(c,1);
@@ -70,9 +86,6 @@ function image_mask = get_color_mask(image)
         bN = rgbN(c,3);
         hue = hsv(c,1) * 360;
         value = hsv(c,3) * 100;
-        if value < value_threshold
-            %continue;
-        end
         % current pixel is red
         if      (hue >= 330 || hue <= 30) && ...
                 (normal_prob(rN, rN_mean, rN_sdev) <  0.00001)
