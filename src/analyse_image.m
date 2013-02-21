@@ -1,17 +1,30 @@
-function mask = analyse_image(image)
+function [pretty_mask, varargout] = analyse_image(image)
     [num_rows, num_cols, num_channels] = size(image);
-    [mask, convex_centroids] = mask_convex_regions(image);
-    mask = demask_triangles(image, mask);
+    blob_mask = mask_colors(image);
+    [convex_mask, convex_centroids] = mask_convex_regions(image, blob_mask);
+    [notriangle_mask, centroids] = demask_triangles(image, convex_mask);
+    for c = 1 : num_channels
+        convex_mask(:,:,c) = bwmorph(convex_mask(:,:,c), 'Remove');
+    end
+    convex_mask = overlay_rays(convex_mask, centroids, convex_centroids, 99, ...
+                               'Color', [1 0 0; 0 1 0; 0 0 1]);
+    varargout{1} = centroids;
+    varargout{2} = convex_centroids;
+    varargout{3} = blob_mask;
+    pretty_mask = convex_mask;
 end
 
 
-function mask = demask_triangles(image, mask)
+function [mask, varargout] = demask_triangles(image, mask)
     [num_rows, num_cols, num_channels] = size(image);
+    centroids = zeros(num_channels, 2);
     for c = 1 : num_channels
-        channel_mask = mask(:,:,c);
-        num_rgb = sum(channel_mask(:));
         channel = image(:,:,c);
-        rgb_values = zeros(num_rgb, 1);
+        channel_mask = mask(:,:,c);
+        if ~any(channel_mask)
+            continue;
+        end
+        rgb_values = zeros(sum(channel_mask(:)), 1);
         idx = 1;
         for nr = 1 : num_rows
             for nc = 1 : num_cols
@@ -25,19 +38,21 @@ function mask = demask_triangles(image, mask)
         mean_rgb = mean(rgb_values(:));
         channel_mask(channel < mean_rgb) = 0;
         mask(:,:,c) = channel_mask;
+        props = regionprops(channel_mask, 'Centroid');
+        centroid = props.Centroid;
+        centroids(c,:) = [centroid(2), centroid(1)];
     end
+    varargout{1} = centroids;
 end
 
 
-function [color_mask, varargout] = mask_convex_regions(image)
+function [color_mask, varargout] = mask_convex_regions(image, mask)
     [num_rows, num_cols, num_channels] = size(image);
-
-    color_mask_ugly = mask_colors(image);
     color_mask = zeros(num_rows, num_cols, num_channels);
 
     convex_centroids = zeros(num_channels, 2);
     for c = 1 : num_channels
-        channel = color_mask_ugly(:,:,c);
+        channel = mask(:,:,c);
         if ~any(channel(:))
             continue;
         end

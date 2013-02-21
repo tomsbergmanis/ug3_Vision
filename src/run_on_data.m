@@ -48,12 +48,11 @@ for c = 1 : num_dirs
         disp(sprintf('\tinput = %s', input(strfind(input, TL_DIR) : end)));
         image = imread(input);
         timer = tic;
-        [mask, ~, ~, mask2] = filter_fn(image);
+        mask = filter_fn(image);
         elapsed = toc(timer);
         times(end + 1) = elapsed;
         output = fullfile(out_dir, file_name);
-        image = overlay_mask(image, mask, 'Saturation', 0.5);
-        image = overlay_mask(image, mask2);
+        image = overlay_mask(image, mask, 'Saturation', 0.25);
         imwrite(image, output, 'jpg');
         disp(sprintf('\toutput = %s', output(strfind(input, TL_DIR) : end)));
         disp(sprintf('\tprocessing time = %fs', elapsed));
