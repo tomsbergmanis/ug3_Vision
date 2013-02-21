@@ -71,7 +71,7 @@ function image_mask = get_color_mask(image)
         hue = hsv(c,1) * 360;
         value = hsv(c,3) * 100;
         if value < value_threshold
-            continue;
+            %continue;
         end
         % current pixel is red
         if      (hue >= 330 || hue <= 30) && ...
@@ -79,11 +79,6 @@ function image_mask = get_color_mask(image)
                     image_mask(c,1) = 1;
         % current pixel is green
         elseif  (hue >= 80 && hue < 150) && ...
-                (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
-                   image_mask(c,2) = 1;
-        % current pixel is blue
-        elseif  (hue >= 80 && hue < 150) && ...
-                (value >= 20) && ...
                 (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
                    image_mask(c,2) = 1;
         % current pixel is blue
@@ -125,7 +120,7 @@ end
 % arrow of the red robot in data/1/00000006.jpg
 function image = remove_outliers(image, distance_proportion_threshold)
     if nargin < 2
-        distance_proportion_threshold = 2.0;
+        distance_proportion_threshold = 0.5;
     end
 
     [~, ~, num_channels] = size(image);
