@@ -63,7 +63,7 @@ function image_mask = get_color_mask(image)
     value_hist = histc(hsv(:,3) * 100, 0:100);
     value_hist = smooth_histogram(value_hist, 4, 2);
     value_threshold = threshold_histogram(value_hist);
-
+  
     for c = 1 : num_pixels
         rN = rgbN(c,1);
         gN = rgbN(c,2);
@@ -79,6 +79,11 @@ function image_mask = get_color_mask(image)
                     image_mask(c,1) = 1;
         % current pixel is green
         elseif  (hue >= 80 && hue < 150) && ...
+                (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
+                   image_mask(c,2) = 1;
+        % current pixel is blue
+        elseif  (hue >= 80 && hue < 150) && ...
+                (value >= 20) && ...
                 (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
                    image_mask(c,2) = 1;
         % current pixel is blue
