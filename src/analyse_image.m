@@ -1,16 +1,19 @@
 function [pretty_mask, varargout] = analyse_image(image)
-    [num_rows, num_cols, num_channels] = size(image);
+    [~, ~, num_channels] = size(image);
     blob_mask = mask_colors(image);
     [convex_mask, convex_centroids] = mask_convex_regions(image, blob_mask);
-    [notriangle_mask, centroids] = demask_triangles(image, convex_mask);
+    [mask, centroids, triangle_mask, triangle_centroids] = demask_triangles(image, convex_mask);
     for c = 1 : num_channels
         convex_mask(:,:,c) = bwmorph(convex_mask(:,:,c), 'Remove');
     end
     convex_mask = overlay_rays(convex_mask, centroids, convex_centroids, 99, ...
                                'Color', [1 0 0; 0 1 0; 0 0 1]);
     varargout{1} = centroids;
-    varargout{2} = convex_centroids;
+    varargout{2} = triangle_centroids;
+    %disp(triangle_centroids);
+    %disp(convex_centroids);
     varargout{3} = blob_mask;
+    varargout{4} = triangle_mask;
     pretty_mask = convex_mask;
 end
 
@@ -18,9 +21,12 @@ end
 function [mask, varargout] = demask_triangles(image, mask)
     [num_rows, num_cols, num_channels] = size(image);
     centroids = zeros(num_channels, 2);
+    triangle_centroids  = zeros(num_channels, 2);
+    trinagle_mask = mask;
     for c = 1 : num_channels
         channel = image(:,:,c);
         channel_mask = mask(:,:,c);
+        channel_trinagle_mask =  mask(:,:,c);
         if ~any(channel_mask)
             continue;
         end
@@ -37,12 +43,20 @@ function [mask, varargout] = demask_triangles(image, mask)
         end
         mean_rgb = mean(rgb_values(:));
         channel_mask(channel < mean_rgb) = 0;
+        channel_trinagle_mask(channel > mean_rgb) = 0;
+        trinagle_mask(:,:,c) = channel_trinagle_mask;
         mask(:,:,c) = channel_mask;
         props = regionprops(channel_mask, 'Centroid');
         centroid = props.Centroid;
         centroids(c,:) = [centroid(2), centroid(1)];
+        props = regionprops(channel_trinagle_mask, 'Centroid');
+        centroid = props.Centroid;
+        triangle_centroids(c,:) = [centroid(2), centroid(1)];
     end
     varargout{1} = centroids;
+    varargout{2} = trinagle_mask;
+    varargout{3} = triangle_centroids;
+    
 end
 
 
@@ -103,7 +117,7 @@ function image_mask = mask_colors(image)
         value = hsv(c,3) * 100;
         % current pixel is red
         if      (hue >= 330 || hue <= 30) && ...
-                (normal_prob(rN, rN_mean, rN_sdev) <  0.00001)
+                (normal_prob(rN, rN_mean, rN_sdev) <  0.0001)
                     image_mask(c,1) = 1;
         % current pixel is green
         elseif  (hue >= 80 && hue < 150) && ...

@@ -46,7 +46,7 @@ function res = main(path, image_type, start_offset, time_step)
         reds{i} = image(:,:,1);
         greens{i} = image(:,:,2);
         blues{i} = image(:,:,3);
-        imshow(overlay_mask(overlay_mask(image,directions), masks));
+        imshow(overlay_mask(image,directions));
         pause(time_step);
     end
     
