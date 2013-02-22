@@ -6,8 +6,9 @@ function [pretty_mask, varargout] = analyse_image(image)
     for c = 1 : num_channels
         convex_mask(:,:,c) = bwmorph(convex_mask(:,:,c), 'Remove');
     end
-    convex_mask = overlay_rays(convex_mask, centroids, convex_centroids, 99, ...
+    convex_mask = overlay_rays(convex_mask, centroids, triangle_centroids, 99, ...
                                'Color', [1 0 0; 0 1 0; 0 0 1]);
+                       
     varargout{1} = centroids;
     varargout{2} = triangle_centroids;
     %disp(triangle_centroids);
@@ -238,5 +239,33 @@ function mask = filter_mask(mask)
         end
         channel=reshape(channel, x,y);
         mask(:,:,c)=channel;
+    end
+end
+
+function points = find_directions(mask)
+    [x, y, num_channels] = size(mask);
+    for j = 1 : num_channels
+        cor=corner(mask(:,:,j), 3)
+        d1= sqrt(sum((cor(1,:) - cor(2,:)) .^ 2));
+        d2= sqrt(sum((cor(2,:) - cor(3,:)) .^ 2));
+        d3= sqrt(sum((cor(1,:) - cor(3,:)) .^ 2));
+        if d1>d2 && d1>d3
+            a=cor(1,:);
+            b=cor(2,:);
+            c=cor(3,:);
+        end
+        if d2>d1 && d2>d3
+            a=cor(2,:);
+            b=cor(3,:);
+            c=cor(1,:);
+        end
+        if d1>d2 && d1>d3
+            a=cor(1,:);
+            b=cor(3,:);
+            c=cor(2,:);
+        end
+        midpoint=(a+b)/2;
+        points(1,j)=midpoint;
+        points(2,j)=c;
     end
 end
