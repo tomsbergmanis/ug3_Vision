@@ -1,21 +1,13 @@
 function [pretty_mask, varargout] = analyse_image(image)
-    [~, ~, num_channels] = size(image);
+    [row, col, ~] = size(image);
     blob_mask = mask_colors(image);
-    [convex_mask, convex_centroids] = mask_convex_regions(image, blob_mask);
-    [mask, centroids, triangle_mask, triangle_centroids] = demask_triangles(image, convex_mask);
-    for c = 1 : num_channels
-        convex_mask(:,:,c) = bwmorph(convex_mask(:,:,c), 'Remove');
-    end
-    convex_mask = overlay_rays(convex_mask, centroids, triangle_centroids, 99, ...
+    [convex_mask, ~] = mask_convex_regions(image, blob_mask);
+    [~, centroids, ~, triangle_centroids] = demask_triangles(image, convex_mask);
+
+    pretty_mask = overlay_rays(zeros(row,col,3), centroids,triangle_centroids, 99, ...
                                'Color', [1 0 0; 0 1 0; 0 0 1]);
-                       
     varargout{1} = centroids;
     varargout{2} = triangle_centroids;
-    %disp(triangle_centroids);
-    %disp(convex_centroids);
-    varargout{3} = mask;
-    varargout{4} = triangle_mask;
-    pretty_mask = convex_mask;
 end
 
 
@@ -122,7 +114,7 @@ function image_mask = mask_colors(image)
                 (normal_prob(rN, rN_mean, rN_sdev) <  0.0001)
                     image_mask(c,1) = 1;
         % current pixel is green
-        elseif  (hue >= 80 && hue < 150) && ...
+        elseif  (hue >= 80 && hue < 180) && ...
                 (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
                    image_mask(c,2) = 1;
         % current pixel is blue
@@ -242,30 +234,38 @@ function mask = filter_mask(mask)
     end
 end
 
-function points = find_directions(mask)
-    [x, y, num_channels] = size(mask);
-    for j = 1 : num_channels
-        cor=corner(mask(:,:,j), 3)
-        d1= sqrt(sum((cor(1,:) - cor(2,:)) .^ 2));
-        d2= sqrt(sum((cor(2,:) - cor(3,:)) .^ 2));
-        d3= sqrt(sum((cor(1,:) - cor(3,:)) .^ 2));
-        if d1>d2 && d1>d3
-            a=cor(1,:);
-            b=cor(2,:);
-            c=cor(3,:);
-        end
-        if d2>d1 && d2>d3
-            a=cor(2,:);
-            b=cor(3,:);
-            c=cor(1,:);
-        end
-        if d1>d2 && d1>d3
-            a=cor(1,:);
-            b=cor(3,:);
-            c=cor(2,:);
-        end
-        midpoint=(a+b)/2;
-        points(1,j)=midpoint;
-        points(2,j)=c;
-    end
-end
+%function points = find_directions	(mask)
+%    points = [];
+%    [x, y, num_channels] = size(mask);
+%    a = [0 0];
+%    b = [0 0];
+%    c = [0 0];
+%    for j = 1 : num_channels
+%        cor=corner(mask(:,:,j), 3);
+%        for i = 1 : 3
+%           t=cor(i,:);
+%           cor(i,:)=[t(2) t(1)]
+%        end
+%        d1= sqrt(sum((cor(1,:) - cor(2,:)) .^ 2));
+%        d2= sqrt(sum((cor(2,:) - cor(3,:)) .^ 2));
+%        d3= sqrt(sum((cor(1,:) - cor(3,:)) .^ 2));
+%        if d1>d2 && d1>d3
+%            a=cor(1,:);
+%            b=cor(2,:);
+%            c=cor(3,:);
+%        end
+%        if d2>d1 && d2>d3
+%            a=cor(2,:);
+%            b=cor(3,:);
+%            c=cor(1,:);
+%        end
+%        if d1>d2 && d1>d3
+%            a=cor(1,:);
+%            b=cor(3,:);
+%            c=cor(2,:);
+%        end
+%        midpoint=(a+b)/2;
+%        points=[points;midpoint];
+%        points=[points;c];
+%    end
+%end

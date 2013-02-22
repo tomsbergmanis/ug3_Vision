@@ -21,7 +21,7 @@ function res = draw_track(path, image_type, start_offset)
        
     for i = 1 + start_offset : num_files
         image = imread(sprintf('%s/%s', path, filenames{i}));
-       	[~, centroids] = analyse_image(image);
+       	[~, centroids,~,~,tri] = analyse_image(image);
                             
         r = uint16(centroids(1,:));
         if r(1)>0 && r(2)>0

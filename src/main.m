@@ -23,7 +23,7 @@ function res = main(path, image_type, start_offset, time_step)
        
     for i = 1 + start_offset : num_files
         image = imread(sprintf('%s/%s', path, filenames{i}));
-       	[directions, centroids, ~, masks] = analyse_image(image);
+       	[directions, centroids] = analyse_image(image);
                             
         r = uint16(centroids(1,:));
         if r(1)>0 && r(2)>0
@@ -47,6 +47,7 @@ function res = main(path, image_type, start_offset, time_step)
         greens{i} = image(:,:,2);
         blues{i} = image(:,:,3);
         imshow(overlay_mask(image,directions));
+        
         pause(time_step);
     end
     
