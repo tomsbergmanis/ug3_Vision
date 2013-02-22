@@ -12,7 +12,7 @@ function [pretty_mask, varargout] = analyse_image(image)
     varargout{2} = triangle_centroids;
     %disp(triangle_centroids);
     %disp(convex_centroids);
-    varargout{3} = blob_mask;
+    varargout{3} = mask;
     varargout{4} = triangle_mask;
     pretty_mask = convex_mask;
 end
@@ -44,6 +44,7 @@ function [mask, varargout] = demask_triangles(image, mask)
         mean_rgb = mean(rgb_values(:));
         channel_mask(channel < mean_rgb) = 0;
         channel_trinagle_mask(channel > mean_rgb) = 0;
+        channel_trinagle_mask=filter_mask(channel_trinagle_mask);
         trinagle_mask(:,:,c) = channel_trinagle_mask;
         mask(:,:,c) = channel_mask;
         props = regionprops(channel_mask, 'Centroid');
@@ -218,5 +219,24 @@ function image = enforce_similar_channel_areas(image, area_proportion_threshold)
             (area > max_area / area_proportion_threshold)
                 image(:,:,c) = image(:,:,c) * 0;
         end
+    end
+end
+
+%this filters out all conneceted regions but the biggest one
+function mask = filter_mask(mask)
+    [x, y, num_channels] = size(mask);
+    
+    for c = 1 : num_channels
+        channel=zeros(x,y);
+        channel=reshape(channel, x*y,1);
+        blob_info=bwconncomp(mask(:,:,c));
+        blob_list=blob_info.PixelIdxList;
+        [nrows, ncols] = cellfun(@size, blob_list);
+        largest_blob_pixels=blob_list{find(nrows == max(nrows))};
+        for i=1 : max(nrows)
+            channel(largest_blob_pixels(i))=1;
+        end
+        channel=reshape(channel, x,y);
+        mask(:,:,c)=channel;
     end
 end
