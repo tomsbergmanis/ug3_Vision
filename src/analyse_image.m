@@ -1,17 +1,30 @@
 function [pretty_mask, varargout] = analyse_image(image)
-    [row, col, ~] = size(image);
+    [num_rows, num_cols, num_channels] = size(image);
     blob_mask = mask_colors(image);
     [convex_mask, ~] = mask_convex_regions(image, blob_mask);
-    [~, centroids, ~, triangle_centroids] = demask_triangles(image, convex_mask);
+    [convex_mask]=demask_triangles(image, convex_mask, false);
+    [convex_mask, ~] = mask_convex_regions(image, convex_mask);
+    
+    [~, centroids, ~, triangle_centroids] = ...
+                                demask_triangles(image, convex_mask, true);
 
-    pretty_mask = overlay_rays(zeros(row,col,3), centroids,triangle_centroids, 99, ...
+    pretty_mask = overlay_rays(zeros(num_rows,num_cols,num_channels),...
+                                centroids,triangle_centroids, 99, ...
                                'Color', [1 0 0; 0 1 0; 0 0 1]);
     varargout{1} = centroids;
     varargout{2} = triangle_centroids;
+    varargout{3} = convex_mask;
 end
 
 
-function [mask, varargout] = demask_triangles(image, mask)
+% this function can used to find both - triangles and masks without
+% triangles. To find triangles it must be run with
+% get_triangle_centroids=true. Also application of the function int the
+% following fashion gives better results. 
+%    [convex_mask, ~] = mask_convex_regions(image, blob_mask);
+%    [convex_mask]=demask_triangles(image, convex_mask, false);
+%    [convex_mask, ~] = mask_convex_regions(image, convex_mask);
+function [mask, varargout] = demask_triangles(image, mask, get_triangle_centroids)
     [num_rows, num_cols, num_channels] = size(image);
     centroids = zeros(num_channels, 2);
     triangle_centroids  = zeros(num_channels, 2);
@@ -36,22 +49,26 @@ function [mask, varargout] = demask_triangles(image, mask)
         end
         mean_rgb = mean(rgb_values(:));
         channel_mask(channel < mean_rgb) = 0;
-        channel_trinagle_mask(channel > mean_rgb) = 0;
-        channel_trinagle_mask=filter_mask(channel_trinagle_mask);
-        trinagle_mask(:,:,c) = channel_trinagle_mask;
+        
         mask(:,:,c) = channel_mask;
         props = regionprops(channel_mask, 'Centroid');
         centroid = props.Centroid;
         centroids(c,:) = [centroid(2), centroid(1)];
-        props = regionprops(channel_trinagle_mask, 'Centroid');
-        centroid = props.Centroid;
-        triangle_centroids(c,:) = [centroid(2), centroid(1)];
+        if get_triangle_centroids
+            channel_trinagle_mask(channel > mean_rgb) = 0;
+            channel_trinagle_mask=filter_mask(channel_trinagle_mask);
+            trinagle_mask(:,:,c) = channel_trinagle_mask;
+            props = regionprops(channel_trinagle_mask, 'Centroid');
+            centroid = props.Centroid;
+            triangle_centroids(c,:) = [centroid(2), centroid(1)];
+        end
     end
     varargout{1} = centroids;
     varargout{2} = trinagle_mask;
     varargout{3} = triangle_centroids;
     
 end
+
 
 
 function [color_mask, varargout] = mask_convex_regions(image, mask)
@@ -111,15 +128,15 @@ function image_mask = mask_colors(image)
         value = hsv(c,3) * 100;
         % current pixel is red
         if      (hue >= 330 || hue <= 30) && ...
-                (normal_prob(rN, rN_mean, rN_sdev) <  0.0001)
+                (normal_prob(rN, rN_mean, rN_sdev) <  0.001)
                     image_mask(c,1) = 1;
         % current pixel is green
         elseif  (hue >= 80 && hue < 180) && ...
-                (normal_prob(gN, gN_mean, gN_sdev) <  0.005)
+                (normal_prob(gN, gN_mean, gN_sdev) <  0.007)
                    image_mask(c,2) = 1;
         % current pixel is blue
         elseif  (hue >= 150 && hue <= 270) && ...
-                (normal_prob(bN, bN_mean, bN_sdev) < 0.0000075)
+                (normal_prob(bN, bN_mean, bN_sdev) < 0.0000085)
                    image_mask(c,3) = 1;
         end
     end
