@@ -2,10 +2,11 @@ function [pretty_mask, varargout] = analyse_image(image)
     [num_rows, num_cols, num_channels] = size(image);
     blob_mask = mask_colors(image);
     [convex_mask, ~] = mask_convex_regions(image, blob_mask);
-    [convex_mask]=demask_triangles(image, convex_mask, false);
+    [convex_mask, ~, shit_tri]=demask_triangles(image, convex_mask, true);
+    v=convex_mask;
     [convex_mask, ~] = mask_convex_regions(image, convex_mask);
     
-    [~, centroids, ~, triangle_centroids] = ...
+    [a, centroids, b, triangle_centroids] = ...
                                 demask_triangles(image, convex_mask, true);
 
     pretty_mask = overlay_rays(zeros(num_rows,num_cols,num_channels),...
@@ -14,6 +15,13 @@ function [pretty_mask, varargout] = analyse_image(image)
     varargout{1} = centroids;
     varargout{2} = triangle_centroids;
     varargout{3} = convex_mask;
+    varargout{4} = a;
+    varargout{5} = b;
+    varargout{6} = v;
+    varargout{7} = shit_tri;
+    varargout{8} = blob_mask;
+    
+    
 end
 
 
