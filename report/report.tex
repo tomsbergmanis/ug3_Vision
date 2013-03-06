@@ -32,6 +32,80 @@ the colours of the robots.
 In the following sections the three algorithms are described in detail. 
 
 \subsection{Detection of Robots}
+\begin{description}
+\item[Input] \hfill \\
+    $I$, a three channel image of dimensions m*n in the RGB colorspace.
+\item[Output] \hfill \\
+    $M$, a m*n*3 binary matrix where for each pixel $(i,j)$ of $I$, it holds 
+    that: \\
+    $M(i,j,1) = 1 \leftrightarrow (i,j)$ belongs to the red robot, \\
+    $M(i,j,2) = 1 \leftrightarrow (i,j)$ belongs to the green robot, \\
+    $M(i,j,3) = 1 \leftrightarrow (i,j)$ belongs to the blue robot.
+\end{description}
+\textbf{Algorithm}
+\begin{enumerate}
+    \item
+    Apply approximate normalisation to a copy $I_n$ of $I$:\\
+    For each pixel in $I_n$, calculate the sum S$_{rgb}$ of the 
+    red green, and blue values of that pixel.\\
+    If the pixel is not absolute black (S$_{rgb}$ $\ne$ 0), set each of the 
+    pixel's red, green, and blue values to that value divided by S$_{rgb}$.
+
+    \item
+    Calculate $\mu_r, \mu_g, \mu_b$ and $\sigma_r, \sigma_g, \sigma_b$, the 
+    means and standard deviations of the values in the three channels of $I_n$.
+
+    \item
+    Assign each pixel $P = (i,j)$ in $I$ to one of the robots or to the 
+    background:
+    \begin{itemize}
+        \item
+        Normalise $P$'s red, green, and blue values, giving $P_n$.
+        \item
+        Calculate the probabilities $p_r, p_g, p_b$ that $P_n$ was generated 
+        by the gaussian distributions $\mathcal{N}_r = (\mu_r, \sigma_r),
+        \mathcal{N}_g = (\mu_g, \sigma_g), \mathcal{N}_b = (\mu_b, \sigma_b)$.
+        \item
+        Calculate $P$'s hue value $h$.
+        \item
+        If $h$ is whithin a certain range defined as red and $p_r$ is
+        sufficiently small, set $M(i,j,1) = 1$ (similarly for ranges defined as
+        green/blue and $p_g$/$p_b$. If none of these conditions are met, set
+        $M(i,j,1) = M(i,j,2) = M(i,j,3) = 0$.
+    \end{itemize}
+
+    \item
+    Remove noise from each channel in $M$:
+    \begin{itemize}
+        \item
+        Set pixels to zero if they have fewer neighbours with value one than
+        they have adjacent pixels with value zero.
+        \item
+        Set zero-valued pixels to one if they have two one-valued 
+        horizontal or vertical neighbours.
+    \end{itemize}
+
+    \item
+    Remove components that are distant from the main concentration of mass in
+    each channel in $M$:
+    \begin{itemize}
+        \item
+        Compute the center of mass $C$ of the channel.
+        \item
+        Compute $c_1, c_2, \ldots$, the centers of mass of each connected 
+        component in the channel.
+        \item
+        Compute the mean distance $C_m$ of the $c_k$ to $C$.
+        \item
+        Set $M(i,j) = 0$ for all the pixels $(i,j)$ in those components $i$ that
+        have $c_i > t \cdot C_m$ for some threshold $t$.
+    \end{itemize}
+
+    \item
+    Exploit the fact that all robots have similar sizes by setting every channel
+    in $M$ to all-zeros if the number of pixels set in that channel is smaller
+    than the number of pixels set in the most populated channel by some margin.
+\end{enumerate} 
 
 \subsection{Detection of Directions}
 \begin{enumerate}
