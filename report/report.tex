@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper,twocolumn]{article}
+\documentclass[10pt,a4paper]{article}
 \usepackage{amssymb,amsmath}
 \usepackage{graphicx} 	 
 \usepackage{times}
@@ -45,11 +45,15 @@ In the following sections the three algorithms are described in detail.
 \textbf{Algorithm}
 \begin{enumerate}
     \item
-    Apply approximate normalisation to a copy $I_n$ of $I$:\\
-    For each pixel in $I_n$, calculate the sum S$_{rgb}$ of the 
-    red green, and blue values of that pixel.\\
-    If the pixel is not absolute black (S$_{rgb}$ $\ne$ 0), set each of the 
-    pixel's red, green, and blue values to that value divided by S$_{rgb}$.
+    Apply approximate RGB-normalisation to $I$, giving $I_n$:
+    \begin{itemize}
+        \item
+        For each pixel in $I_n$, calculate the sum S$_{rgb}$ of the red, green, 
+        and blue values of that pixel.
+        \item
+        If the pixel is not absolute black (S$_{rgb}$ $\ne$ 0), set each of the 
+        pixel's red, green, and blue values to that value divided by S$_{rgb}$.
+    \end{itemize}
 
     \item
     Calculate $\mu_r, \mu_g, \mu_b$ and $\sigma_r, \sigma_g, \sigma_b$, the 
@@ -105,6 +109,12 @@ In the following sections the three algorithms are described in detail.
     Exploit the fact that all robots have similar sizes by setting every channel
     in $M$ to all-zeros if the number of pixels set in that channel is smaller
     than the number of pixels set in the most populated channel by some margin.
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=40mm]{d1_i5_blob_mask.jpg}
+        \caption{Result of Robot detection}
+    \end{figure} 
 \end{enumerate} 
 
 \subsection{Detection of Directions}
@@ -112,11 +122,6 @@ In the following sections the three algorithms are described in detail.
     \item
     After having detected robot as a set of points in the image a convex hull 
     of these points was calculated.
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=40mm]{d1_i5_blob_mask.jpg}
-        \caption{Result of Robot detection}
-    \end{figure} 
     \textit{
     Further detection of the direction of the robot was done under the 
     assumption that colour representing the robot is different and appears 
@@ -137,7 +142,7 @@ In the following sections the three algorithms are described in detail.
     \begin{figure}[h]
         \centering
         \includegraphics[width=40mm]{d1_i5_demasked_triangles.jpg}
-        \caption{Step 2: Demasked triangles}
+        \caption{Demasked triangles (step 2)}
     \end{figure} 
 
     \item
@@ -158,7 +163,7 @@ In the following sections the three algorithms are described in detail.
     \begin{figure}[h]
         \centering
         \includegraphics[width=40mm]{d1_i5_triangles.jpg}
-        \caption{Step 5: Triangles}
+        \caption{Triangles (step 5)}
     \end{figure} 
 
     \item
@@ -170,7 +175,7 @@ In the following sections the three algorithms are described in detail.
     \begin{figure}[h]
         \centering
         \includegraphics[width=40mm]{d1_i5_lines.png}
-        \caption{Step 7: Lines}
+        \caption{Lines (step 7)}
     \end{figure} 
 
     \item
@@ -178,7 +183,7 @@ In the following sections the three algorithms are described in detail.
     \begin{figure}[h]
         \centering
         \includegraphics[width=40mm]{d1_i5_result.jpg}
-        \caption{Step 8: Result}
+        \caption{Result (step 8)}
     \end{figure} 
 \end{enumerate} 
 
