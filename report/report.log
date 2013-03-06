@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2012.9.12)  6 MAR 2013 22:41
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2012.9.12)  6 MAR 2013 23:13
 entering extended mode
  %&-line parsing enabled.
 **report.tex
@@ -253,19 +253,20 @@ Overfull \hbox (4.39558pt too wide) in paragraph at lines 239--254
  []
 
 [4 <./d1_i5_demasked_triangles.jpg> <./d1_i5_triangles.jpg> <./d1_i5_result.jpg
->] <d2_i32_loose_detection_example.jpg, id=29, 172.645pt x 63.23625pt>
+>] [5 <./d1_trace.jpg> <./d2_trace.jpg>]
+<d2_i32_loose_detection_example.jpg, id=32, 172.645pt x 63.23625pt>
 File: d2_i32_loose_detection_example.jpg Graphic file (type jpg)
 
 <use d2_i32_loose_detection_example.jpg>
-<d4_i66_bad_detection_example.jpg, id=30, 253.94875pt x 101.37875pt>
+<d4_i66_bad_detection_example.jpg, id=33, 253.94875pt x 101.37875pt>
 File: d4_i66_bad_detection_example.jpg Graphic file (type jpg)
 
 <use d4_i66_bad_detection_example.jpg>
-<d1_i100_good_detection_example.jpg, id=31, 266.9975pt x 79.29625pt>
+<d1_i100_good_detection_example.jpg, id=34, 266.9975pt x 79.29625pt>
 File: d1_i100_good_detection_example.jpg Graphic file (type jpg)
 
-<use d1_i100_good_detection_example.jpg> [5 <./d1_trace.jpg> <./d2_trace.jpg>]
-Overfull \hbox (1.2867pt too wide) in paragraph at lines 296--314
+<use d1_i100_good_detection_example.jpg>
+Overfull \hbox (1.2867pt too wide) in paragraph at lines 310--328
 \OT1/ptm/m/n/10 Figure 4[] begets one ad-di-tional ob-ser-va-tion re-lated to t
 he eval-u-a-tion of the robot-tracking
  []
@@ -288,7 +289,7 @@ share/texmf/fonts/type1/bluesky/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/blu
 esky/cm/cmsy7.pfb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/shar
 e/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/time
 s/utmri8a.pfb>
-Output written on report.pdf (7 pages, 507082 bytes).
+Output written on report.pdf (7 pages, 508169 bytes).
 PDF statistics:
  72 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)
