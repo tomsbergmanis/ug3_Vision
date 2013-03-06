@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2012.9.12)  6 MAR 2013 21:43
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2012.9.12)  6 MAR 2013 22:16
 entering extended mode
  %&-line parsing enabled.
 **report.tex
@@ -188,31 +188,31 @@ File: umsb.fd 2002/01/19 v2.2g AMS font definitions
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 14.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 48.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 51.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 50.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 66.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 65.
  (/usr/share/texmf/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 66.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 65.
 
-Overfull \hbox (3.5656pt too wide) in paragraph at lines 87--91
+Overfull \hbox (3.5656pt too wide) in paragraph at lines 86--90
 \OT1/ptm/m/n/10 none of these con-di-tions are met, set $\OML/cmm/m/it/10 M\OT1
 /cmr/m/n/10 (\OML/cmm/m/it/10 i; j; \OT1/cmr/m/n/10 1) = \OML/cmm/m/it/10 M\OT1
 /cmr/m/n/10 (\OML/cmm/m/it/10 i; j; \OT1/cmr/m/n/10 2) = \OML/cmm/m/it/10 M\OT1
 /cmr/m/n/10 (\OML/cmm/m/it/10 i; j; \OT1/cmr/m/n/10 3) =
  []
 
-<d1_i5_blob_mask.jpg, id=9, 259.97125pt x 259.97125pt>
+<d1_i5_blob_mask.jpg, id=12, 259.97125pt x 259.97125pt>
 File: d1_i5_blob_mask.jpg Graphic file (type jpg)
 
 <use d1_i5_blob_mask.jpg> [2]
-Overfull \hbox (14.33194pt too wide) in paragraph at lines 151--155
+Overfull \hbox (14.33194pt too wide) in paragraph at lines 150--154
 []\OT1/ptm/m/n/10 Calculate $\OML/cmm/m/it/10 ^^V$\OT1/ptm/m/n/10 , the av-er-a
 ge rgb-value over $\OML/cmm/m/it/10 P$\OT1/ptm/m/n/10 . Gen-er-ate $\OT1/cmr/m/
 n/10 ^^E = \OMS/cmsy/m/n/10 f\OML/cmm/m/it/10 p\OMS/cmsy/m/n/10 j\OML/cmm/m/it/
@@ -232,64 +232,65 @@ File: d1_i5_triangles.jpg Graphic file (type jpg)
 File: d1_i5_result.jpg Graphic file (type jpg)
 
 <use d1_i5_result.jpg> [3 <./d1_i5_blob_mask.jpg>]
-Underfull \hbox (badness 10000) in paragraph at lines 209--209
+<d1_trace.jpg, id=23, 513.92pt x 426.59375pt>
+File: d1_trace.jpg Graphic file (type jpg)
+ <use d1_trace.jpg>
+<d2_trace.jpg, id=24, 519.69438pt x 389.77078pt>
+File: d2_trace.jpg Graphic file (type jpg)
+ <use d2_trace.jpg> [4 <./d1_i5_demasked_triangles.jpg> <./d1_i5_triangles.jpg>
+ <./d1_i5_result.jpg>]
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 []\OT1/ptm/m/n/10 saturated,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 211--211
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
 []\OT1/ptm/m/n/10 faded, blue
  []
 
 
-Overfull \hbox (4.39558pt too wide) in paragraph at lines 205--220
+Overfull \hbox (4.39558pt too wide) in paragraph at lines 248--263
 [][] 
  []
 
-[4 <./d1_i5_demasked_triangles.jpg> <./d1_i5_triangles.jpg> <./d1_i5_result.jpg
->] <d2_i32_loose_detection_example.jpg, id=26, 172.645pt x 63.23625pt>
+<d2_i32_loose_detection_example.jpg, id=29, 172.645pt x 63.23625pt>
 File: d2_i32_loose_detection_example.jpg Graphic file (type jpg)
 
 <use d2_i32_loose_detection_example.jpg>
-<d4_i66_bad_detection_example.jpg, id=27, 253.94875pt x 101.37875pt>
+<d4_i66_bad_detection_example.jpg, id=30, 253.94875pt x 101.37875pt>
 File: d4_i66_bad_detection_example.jpg Graphic file (type jpg)
 
 <use d4_i66_bad_detection_example.jpg>
-<d1_i100_good_detection_example.jpg, id=28, 266.9975pt x 79.29625pt>
+<d1_i100_good_detection_example.jpg, id=31, 266.9975pt x 79.29625pt>
 File: d1_i100_good_detection_example.jpg Graphic file (type jpg)
 
-<use d1_i100_good_detection_example.jpg>
-<d1_trace.jpg, id=29, 513.92pt x 426.59375pt>
-File: d1_trace.jpg Graphic file (type jpg)
- <use d1_trace.jpg>
-<d2_trace.jpg, id=30, 519.69438pt x 389.77078pt>
-File: d2_trace.jpg Graphic file (type jpg)
- <use d2_trace.jpg>
-Overfull \hbox (1.2867pt too wide) in paragraph at lines 270--288
-\OT1/ptm/m/n/10 Figure 5[] begets one ad-di-tional ob-ser-va-tion re-lated to t
+<use d1_i100_good_detection_example.jpg> [5 <./d1_trace.jpg> <./d2_trace.jpg>]
+Overfull \hbox (1.2867pt too wide) in paragraph at lines 303--321
+\OT1/ptm/m/n/10 Figure 4[] begets one ad-di-tional ob-ser-va-tion re-lated to t
 he eval-u-a-tion of the robot-tracking
  []
 
-[5 <./d2_i32_loose_detection_example.jpg> <./d4_i66_bad_detection_example.jpg> 
-<./d1_i100_good_detection_example.jpg>] [6 <./d1_trace.jpg> <./d2_trace.jpg>]
-(./report.aux) ) 
+[6 <./d2_i32_loose_detection_example.jpg> <./d4_i66_bad_detection_example.jpg> 
+<./d1_i100_good_detection_example.jpg>] [7] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 2056 strings out of 256216
- 24858 string characters out of 1917072
- 75006 words of memory out of 1500000
- 5317 multiletter control sequences out of 10000+200000
- 23402 words of font info for 57 fonts, out of 1200000 for 2000
+ 2059 strings out of 256216
+ 24902 string characters out of 1917072
+ 75010 words of memory out of 1500000
+ 5320 multiletter control sequences out of 10000+200000
+ 24416 words of font info for 59 fonts, out of 1200000 for 2000
  645 hyphenation exceptions out of 8191
- 27i,10n,24p,233b,365s stack positions out of 5000i,500n,6000p,200000b,15000s
-{/usr/share/texmf/fonts/enc/dvips/base/8r.enc}</usr/share/texmf
-/fonts/type1/bluesky/cm/cmmi10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmm
-i7.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr10.pfb></usr/share/texmf/fon
-ts/type1/bluesky/cm/cmr7.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsy10.pf
-b></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf/fonts/ty
-pe1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (6 pages, 501405 bytes).
+ 27i,10n,24p,233b,367s stack positions out of 5000i,500n,6000p,200000b,15000s
+{/usr/share/texmf/f
+onts/enc/dvips/base/8r.enc}</usr/share/texmf/fonts/type1/bluesky/cm/cmmi10.pfb>
+</usr/share/texmf/fonts/type1/bluesky/cm/cmmi7.pfb></usr/share/texmf/fonts/type
+1/bluesky/cm/cmr10.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmr7.pfb></usr/
+share/texmf/fonts/type1/bluesky/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/blu
+esky/cm/cmsy7.pfb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/shar
+e/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/time
+s/utmri8a.pfb>
+Output written on report.pdf (7 pages, 506402 bytes).
 PDF statistics:
- 63 PDF objects out of 1000 (max. 8388607)
+ 72 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
