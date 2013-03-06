@@ -198,8 +198,30 @@ the images they originated from.
 
 
 \section{Results}\label{results}
-This section describes and illustrates the results of the three algorithms 
-implemented. 
+This section evaluates and visualises the performance of the three algorithms 
+presented in Sections \ref{coloralgo}, \ref{directionalgo}, and 
+\ref{trackingalgo}. \\
+\begin{table}[ht]
+\begin{tabular}{|l || l | l | p{2cm} | p{4cm}|}
+\hline
+\# & Background & Robot Size & Robot Color & Illumination \\
+\hline
+1 & uniform, gray & large & saturated, dark & uniform, red hue \\
+\hline
+2 & noisy, gray & small & faded, blue robot is cyan & 
+    histograms are bell-shaped \\
+\hline
+3 & patterned, brown & large & staturated & daylight only \\
+\hline
+4 & patterned, brown & large & saturated & daylight and artificial 
+    light \\
+\hline
+\end{tabular}
+\caption{Properties of evaluation datasets}
+\label{datasetpropstable}
+\end{table}
+Table \ref{datasetpropstable} describes the properties of 
+the datasets used for algorithm evaluation.
 
 \subsection{Detection of Robots}\label{colorresults}
 Detection of the robots was working perfectly on the two data sets provided, 
