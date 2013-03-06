@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2012.9.12)  6 MAR 2013 22:16
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2012.9.12)  6 MAR 2013 22:41
 entering extended mode
  %&-line parsing enabled.
 **report.tex
@@ -237,23 +237,23 @@ File: d1_trace.jpg Graphic file (type jpg)
  <use d1_trace.jpg>
 <d2_trace.jpg, id=24, 519.69438pt x 389.77078pt>
 File: d2_trace.jpg Graphic file (type jpg)
- <use d2_trace.jpg> [4 <./d1_i5_demasked_triangles.jpg> <./d1_i5_triangles.jpg>
- <./d1_i5_result.jpg>]
-Underfull \hbox (badness 10000) in paragraph at lines 252--252
+ <use d2_trace.jpg>
+Underfull \hbox (badness 10000) in paragraph at lines 243--243
 []\OT1/ptm/m/n/10 saturated,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 254--254
+Underfull \hbox (badness 10000) in paragraph at lines 245--245
 []\OT1/ptm/m/n/10 faded, blue
  []
 
 
-Overfull \hbox (4.39558pt too wide) in paragraph at lines 248--263
+Overfull \hbox (4.39558pt too wide) in paragraph at lines 239--254
 [][] 
  []
 
-<d2_i32_loose_detection_example.jpg, id=29, 172.645pt x 63.23625pt>
+[4 <./d1_i5_demasked_triangles.jpg> <./d1_i5_triangles.jpg> <./d1_i5_result.jpg
+>] <d2_i32_loose_detection_example.jpg, id=29, 172.645pt x 63.23625pt>
 File: d2_i32_loose_detection_example.jpg Graphic file (type jpg)
 
 <use d2_i32_loose_detection_example.jpg>
@@ -265,7 +265,7 @@ File: d4_i66_bad_detection_example.jpg Graphic file (type jpg)
 File: d1_i100_good_detection_example.jpg Graphic file (type jpg)
 
 <use d1_i100_good_detection_example.jpg> [5 <./d1_trace.jpg> <./d2_trace.jpg>]
-Overfull \hbox (1.2867pt too wide) in paragraph at lines 303--321
+Overfull \hbox (1.2867pt too wide) in paragraph at lines 296--314
 \OT1/ptm/m/n/10 Figure 4[] begets one ad-di-tional ob-ser-va-tion re-lated to t
 he eval-u-a-tion of the robot-tracking
  []
@@ -288,7 +288,7 @@ share/texmf/fonts/type1/bluesky/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/blu
 esky/cm/cmsy7.pfb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb></usr/shar
 e/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/time
 s/utmri8a.pfb>
-Output written on report.pdf (7 pages, 506402 bytes).
+Output written on report.pdf (7 pages, 507082 bytes).
 PDF statistics:
  72 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)

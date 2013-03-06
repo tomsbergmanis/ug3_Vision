@@ -48,10 +48,10 @@ appear in some other colour than black.
 \subsection{Detection of Robots}\label{coloralgo}
 \begin{description}
 \item[Input] \hfill \\
-    $I$, a three channel image of dimensions m*n in the RGB colorspace.
+    $I$, a three channel image of dimensions $m \times n$ in the RGB colorspace.
 \item[Output] \hfill \\
-    $M$, a m*n*3 binary matrix where for each pixel $P{ij}$ of $I$, it holds 
-    that: \\
+    $M$, a $m \times n \times 3$ binary matrix where for each pixel $P{ij}$ of
+    $I$, it holds that: \\
     $M(i,j,1) = 1 \leftrightarrow P_{ij}$ belongs to the red robot, \\
     $M(i,j,2) = 1 \leftrightarrow P_{ij}$ belongs to the green robot, \\
     $M(i,j,3) = 1 \leftrightarrow P_{ij}$ belongs to the blue robot.
@@ -129,7 +129,7 @@ Figure \ref{colorfig} shows a visualisation of the output matrix $M$.
 \subsection{Finding Robot Directions}\label{directionalgo}
 \begin{description}
 \item[Input] \hfill \\
-    $I$, a three channel image of dimensions m*n in the RGB colorspace.
+    $I$, a three channel image of dimensions $m \times n$ in the RGB colorspace.
 \item[Output] \hfill \\
     $\Lambda = \{(c^m_r, c^t_r), (c^m_g, c^t_g), (c^m_b, c^t_b)\}$, a set where
     $c^m_r$ is the center of mass of the red robot and $c^t_r$ is the point 
@@ -188,7 +188,7 @@ Figure \ref{directionfig} shows a visualisation of the output set $\Lambda$.
 \begin{description}
 \item[Input] \hfill \\
     $\Upsilon = \{I_1, I_2, \cdots\}$, a sequence where each of the $I_i$ is a 
-    three channel image of dimensions m*n in the RGB colorspace.
+    three channel image of dimensions $m \times n$ in the RGB colorspace.
 \item[Output] \hfill \\
     $\Omega$, a visualisation of the robot positions over $\Upsilon$.
 \end{description}
@@ -233,7 +233,8 @@ Figure \ref{trackingfig} shows a visualisation of the resulting track.
 \section{Results}\label{results}
 This section evaluates and visualises the performance of the three algorithms 
 presented in Sections \ref{coloralgo}, \ref{directionalgo}, and 
-\ref{trackingalgo}. \\
+\ref{trackingalgo}. Table \ref{datasetpropstable} describes the properties of 
+the datasets used for this evaluation.
 \begin{table}[ht]
 \begin{tabular}{|l || l | l | p{2cm} | p{4cm}|}
 \hline
@@ -253,17 +254,19 @@ presented in Sections \ref{coloralgo}, \ref{directionalgo}, and
 \caption{Properties of evaluation datasets}
 \label{datasetpropstable}
 \end{table}
-Table \ref{datasetpropstable} describes the properties of 
-the datasets used for algorithm evaluation.
 
 \subsection{Detection of Robots}\label{colorresults}
-Detection of the robots was working perfectly on the two data sets provided, 
-however it's performance was lower on some of the test sets with significantly 
-different, colorful backgrounds on which error rate in some cases grow up to 10 
-percent of the robot instances being  undetected.
-% this is kinda true casue whe have 2 test sets each having 3 robots per image 
-% with 100 images each thus about 62 out of 300 is 10
-% This section should be expanded. 
+The algorithm described in Section \ref{coloralgo}, worked perfectly on 
+datasets 1 and 2.\\
+Evaluation on the third dataset led to the worst performance over all datasets, 
+with $\sim$60\% of the occurences of the blue robot being undetected and 
+$\sim$40\% of the occurences of the green robot being under-detected (leading 
+to bad direction detection).\\
+The performance on the fourth dataset was interesting: the red robot was under-
+detected in $\sim$45\% of the cases (with the blue and green robots being
+found just fine) - while in the other datasets the red robot was usually
+detected with the highest confidence.
+Over all four datasets, about 10\% of the robot instances were badly detected.
 
 \subsection{Detection of Directions}\label{directionresults}
 Performance of detection of the directions was heavily dependent on the 
