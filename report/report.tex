@@ -1,6 +1,6 @@
 \documentclass[10pt,a4paper]{article}
 \usepackage{amssymb,amsmath}
-\usepackage{graphicx} 	 
+\usepackage{graphicx,subfigure} 	 
 \usepackage{times}
 \title{Introduction To Vision And Robotics \\ Vision Assignment}
 \author{Clemens Wolff, Toms Bergmanis}
@@ -31,16 +31,16 @@ the colours of the robots.
 \section{Methods}
 In the following sections the three algorithms are described in detail. 
 
-\subsection{Detection of Robots}
+\subsection{Detection of Robots}\label{coloralgo}
 \begin{description}
 \item[Input] \hfill \\
     $I$, a three channel image of dimensions m*n in the RGB colorspace.
 \item[Output] \hfill \\
-    $M$, a m*n*3 binary matrix where for each pixel $(i,j)$ of $I$, it holds 
+    $M$, a m*n*3 binary matrix where for each pixel $P{ij}$ of $I$, it holds 
     that: \\
-    $M(i,j,1) = 1 \leftrightarrow (i,j)$ belongs to the red robot, \\
-    $M(i,j,2) = 1 \leftrightarrow (i,j)$ belongs to the green robot, \\
-    $M(i,j,3) = 1 \leftrightarrow (i,j)$ belongs to the blue robot.
+    $M(i,j,1) = 1 \leftrightarrow P_{ij}$ belongs to the red robot, \\
+    $M(i,j,2) = 1 \leftrightarrow P_{ij}$ belongs to the green robot, \\
+    $M(i,j,3) = 1 \leftrightarrow P_{ij}$ belongs to the blue robot.
 \end{description}
 \textbf{Algorithm}
 \begin{enumerate}
@@ -48,20 +48,17 @@ In the following sections the three algorithms are described in detail.
     Apply approximate RGB-normalisation to $I$, giving $I_n$:
     \begin{itemize}
         \item
-        For each pixel in $I_n$, calculate the sum S$_{rgb}$ of the red, green, 
+        For each pixel in $I_n$, calculate the sum $S_{rgb}$ of the red, green, 
         and blue values of that pixel.
         \item
-        If the pixel is not absolute black (S$_{rgb}$ $\ne$ 0), set each of the 
-        pixel's red, green, and blue values to that value divided by S$_{rgb}$.
+        If $S_{rgb} \ne 0$ (the pixel is not absolute black), set each of the 
+        pixel's red, green, and blue values to that value divided by $S_{rgb}$.
     \end{itemize}
-
     \item
     Calculate $\mu_r, \mu_g, \mu_b$ and $\sigma_r, \sigma_g, \sigma_b$, the 
     means and standard deviations of the values in the three channels of $I_n$.
-
     \item
-    Assign each pixel $P = (i,j)$ in $I$ to one of the robots or to the 
-    background:
+    Assign each pixel $P_{ij}$ in $I$ to one of the robots or to the background:
     \begin{itemize}
         \item
         Normalise $P$'s red, green, and blue values, giving $P_n$.
@@ -77,7 +74,6 @@ In the following sections the three algorithms are described in detail.
         green/blue and $p_g$/$p_b$. If none of these conditions are met, set
         $M(i,j,1) = M(i,j,2) = M(i,j,3) = 0$.
     \end{itemize}
-
     \item
     Remove noise from each channel in $M$:
     \begin{itemize}
@@ -88,7 +84,6 @@ In the following sections the three algorithms are described in detail.
         Set zero-valued pixels to one if they have two one-valued 
         horizontal or vertical neighbours.
     \end{itemize}
-
     \item
     Remove components that are distant from the main concentration of mass in
     each channel in $M$:
@@ -99,17 +94,15 @@ In the following sections the three algorithms are described in detail.
         Compute $c_1, c_2, \ldots$, the centers of mass of each connected 
         component in the channel.
         \item
-        Compute the mean distance $C_m$ of the $c_k$ to $C$.
+        Compute the mean distance $\delta$ of the $c_k$ to $C$.
         \item
-        Set $M(i,j) = 0$ for all the pixels $(i,j)$ in those components $i$ that
-        have $c_i > t \cdot C_m$ for some threshold $t$.
+        Set $M(i,j) = 0$ for all the pixels $(i,j)$ in those components $k$ that
+        have $c_k > \tau \delta$ for some threshold $\tau$.
     \end{itemize}
-
     \item
     Exploit the fact that all robots have similar sizes by setting every channel
     in $M$ to all-zeros if the number of pixels set in that channel is smaller
     than the number of pixels set in the most populated channel by some margin.
-
     \begin{figure}[h]
         \centering
         \includegraphics[width=40mm]{d1_i5_blob_mask.jpg}
@@ -118,72 +111,68 @@ In the following sections the three algorithms are described in detail.
 \end{enumerate} 
 
 \subsection{Detection of Directions}
+\textit{
+Further detection of the direction of the robot was done under the 
+assumption that colour representing the robot is different and appears 
+differently than that of the triangle indicating it's direction. 
+Furthermore - it was assumed that the triangle will have lesser pixel 
+colour value in the channel representing robot's colour (red or green, or 
+blue) in RGB representation than the average pixel of the convex hull. 
+These assumptions can be justified by the fact that area of the triangle 
+indicating the direction of the robot constituted relatively smaller area 
+of the convex hull than the rest of the convex hull which was expected to 
+appear in some other colour than black.
+} 
+\textit{
+This step gives tighter and less noisy set of pixels that represent robot's
+coloured part in some harder cases.
+}
+
+\begin{description}
+\item[Input] \hfill \\
+    $I$, a three channel image of dimensions m*n in the RGB colorspace.
+\item[Output] \hfill \\
+    $\Lambda = \{(c^m_r, c^t_r), (c^m_g, c^t_g), (c^m_b, c^t_b)\}$, a set where
+    $c^m_r$ is the center of mass of the red robot and $c^t_r$ is the point 
+    towards which the robot is facing (similarly for the green and blue robots).
+\end{description}
+\textbf{Algorithm}
 \begin{enumerate}
     \item
-    After having detected robot as a set of points in the image a convex hull 
-    of these points was calculated.
-    \textit{
-    Further detection of the direction of the robot was done under the 
-    assumption that colour representing the robot is different and appears 
-    differently than that of the triangle indicating it's direction. 
-    Furthermore - it was assumed that the triangle will have lesser pixel 
-    colour value in the channel representing robot's colour (red or green, or 
-    blue) in RGB representation than the average pixel of the convex hull. 
-    These assumptions can be justified by the fact that area of the triangle 
-    indicating the direction of the robot constituted relatively smaller area 
-    of the convex hull than the rest of the convex hull which was expected to 
-    appear in some other colour than black.
-    } 
-
+    Get a matrix of robot masks $M$ using the algorithm in Section 
+    \ref{coloralgo}. Let $M_i$ be the i$^{th}$ channel of $M$.\\
+    Apply the remainder of the algorithm to each channel $\xi$ in $M$.
     \item
-    The average pixel value of the characteristic channel was computed. Pixels 
-    which were above that value were assigned to one mask, others were omitted 
-    thus triangles were demasked.
+    Calculate the convex hull $H$ of the points in the channel and create the 
+    set of pixels of $I$ that are inside $H$: $P = \{p_{ij} | p_{ij} \in \xi 
+    \land M(i,j,\xi) = 1\}$
+    \item
+    Calculate $\mu$, the average rgb-value over $P$. Generate 
+    $\Pi = \{p | p \in P \land rgbvalue(p) < \mu\}$, the set of pixels in $P$ 
+    that have a below-average rgb value.
+    \item
+    The black triangles on the robots are the pixels in $\Pi$. Get rid of them
+    by setting the relevant indices in $M$ to zero.\\
+    Recompute the convex hull of $M$.
     \begin{figure}[h]
-        \centering
-        \includegraphics[width=40mm]{d1_i5_demasked_triangles.jpg}
-        \caption{Demasked triangles (step 2)}
+        \begin{center}
+            \subfigure[After Removing Triangles]{
+                \includegraphics[width=40mm]{d1_i5_demasked_triangles.jpg}}
+            \subfigure[Removed Triangles]{
+                \includegraphics[width=40mm]{d1_i5_triangles.jpg}}
+        \end{center}
+        \caption{Triangle Detection via Local Thresholding}
     \end{figure} 
-
     \item
-    A convex hull of the result of step 2 was calculated.
-    \textit{
-    This step gives tighter and less noisy set of pixels that represent robot's
-    coloured part in some harder cases.
-    }
-
+    Repeat the previous step and remember the pixels in $\Pi$.
     \item
-    A convex hull was computed for the result of the previous step. 
-
-    \item
-    Once more the average pixel value of the characteristic channel was 
-    computed. This time pixels which were above that value were assigned to 
-    one mask, others were assigned to another mask which was expected to 
-    represent the triangle part of the robot's image.
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=40mm]{d1_i5_triangles.jpg}
-        \caption{Triangles (step 5)}
-    \end{figure} 
-
-    \item
-    Centres of both masks from the previous step were computed. 
-
-    \item
-    Then a line joining them was drawn which depending on how precisely robot
-    was detected would correspond to the direction of the robot.
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=40mm]{d1_i5_lines.png}
-        \caption{Lines (step 7)}
-    \end{figure} 
-
-    \item
-    Result was ploted on the source image.
+    $c^m_\xi$ is the center of mass of $M_\xi$. $c^t_\xi$ is the center of 
+    mass of $\Pi$. \\
+    A line through these two points indicates the direction of the robot.
     \begin{figure}[h]
         \centering
         \includegraphics[width=40mm]{d1_i5_result.jpg}
-        \caption{Result (step 8)}
+        \caption{Detected Directions}
     \end{figure} 
 \end{enumerate} 
 
@@ -216,28 +205,25 @@ percent of the robot instances being  undetected.
 Performance of detection of the directions was heavily dependent on the 
 performance of the detection of the robots. In case of precisely detected robot 
 detected direction perfectly matched the actual direction. 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=40mm]{d1_i100_good_detection_example.jpg}
-    \caption{Result on good detection}
-\end{figure} 
 In case of loose detection - detection where some addition non-robot region is 
 misleadingly detected as a robot - detected direction perfectly matched the 
 actual direction due to algorithms ability to filter noisy detections. 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=40mm]{d2_i32_loose_detection_example.jpg}
-    \caption{Result on loose detection}
-\end{figure} 
 In case of under-detection - detection where some parts of the image 
 representing the robot where omitted - detected direction was skewed on the 
 side opposite (from the axis matching the actual robot's direction) to the 
 misdirected fragment of the robot. Error was proportional to the error of 
 under-detected area of the robot. 
 \begin{figure}[h]
-    \centering
-    \includegraphics[width=40mm]{d4_i66_bad_detection_example.jpg}
-    \caption{Result on under-detection detection}
+    \begin{center}
+        \subfigure[Loose hull detection]{
+            \includegraphics[width=40mm]{d2_i32_loose_detection_example.jpg}}
+        \subfigure[Hull under detection]{
+            \includegraphics[width=40mm]{d4_i66_bad_detection_example.jpg}}
+        \subfigure[Good hull detection]{
+            \includegraphics[width=40mm]{d1_i100_good_detection_example.jpg}}
+    \end{center}
+    \caption{
+        Direction detections for convex hulls of different qualities}
 \end{figure} 
 
 \subsection{Tracking of the robots}
