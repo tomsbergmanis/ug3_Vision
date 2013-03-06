@@ -331,20 +331,34 @@ resolution in the image.
 The algorithms in Sections \ref{coloralgo}, \ref{directionalgo}, and 
 \ref{trackingalgo} operate under a limited number of reasonable simplifying
 assumptions and performed well across a range of datasets captured under very
-different conditions.
-
-Robot detection could be improved [WRITE PLEASE HOW]
-
-Another way how to improve the detection of the robots could be utilisation of 
-second order spatial statistics of the robot images. Using such approach might 
-give good results combined with our current approach.
-Direction detection could be improved by making it less dependent on detection 
-of the robots. It could be achieved by performing local search near the regions 
-detected as robots. Such approach would improve accuracy of the directions 
-detected, however it would make algorithm much slower. 
-Another possible direction of development could be shape analysis - currently 
-algorithms utilise only image's colour statistics due to limited information 
-about the scale of the images and the possible placements of the camera. 
+different conditions.\\
+The robot color detection algorithm of Section \ref{coloralgo} could be improved
+by adding more stringent conditions on the shape of the robots e.g. fitting a
+circle or ellipse to them rather than a convex hull. This should improve the
+subsequent performance of the direction-detection algorithm by reducing the
+amount of under-detections.\\
+If assumptions about the size, scale, and shape of the robots can be made, Hugh 
+transforms or other shape-based techniques could be used to detect the robots.
+This would be more robust than the current color/pixel based approach but not 
+invariant under scale or differences in camera positions.\\
+Another way to improve the detection of the robots could be augmenting the
+current approach with the utilisation of second order spatial image statistics
+to pre-process the images. This would lead to a rough estimate of the robot
+positions with few false negatives, thus improving the currently utilised
+algorithms due to a reduced search space (implying a denser signal). A reduced
+search space also allows for computationally expensive but high-precision 
+techniques to be used. One example of such a technique is a local color-based
+search starting from a small seed of pixels that are hypothesised to be part of
+a robot.\\
+Direction detection could be improved by making it less dependent on the
+accuracy of the robot detection. One way to achieve this would be to base the 
+direction calculation on properties of the detected triangles (e.g. direction =
+tangent line to the longest side) rather than on the triangles' centers of 
+mass. This would increase robustness to under-detections.\\
+Cross-frame tracking could be improved by abusing spatio-temporal proximity. One
+way to do this would be put a cap on how far the centroid of the robot can move 
+in a certain frame interval, thus smoothing out the odd completely wrong 
+prediction.
 
 
 \section{Code}\label{code}
