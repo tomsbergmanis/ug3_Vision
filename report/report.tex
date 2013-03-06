@@ -2,6 +2,7 @@
 \usepackage{amssymb,amsmath}
 \usepackage{graphicx,subfigure} 	 
 \usepackage{times}
+\setlength\parindent{0pt}
 \title{Introduction To Vision And Robotics \\ Vision Assignment}
 \author{Clemens Wolff, Toms Bergmanis}
 \date{March 7th, 2013}
@@ -10,7 +11,7 @@
 
 \maketitle
 
-\section{Introduction}
+\section{Introduction}\label{intro}
 This report describes the work done for the first assignment in the IVR course. 
 It gives the aims and hypotheses that guided the work; describes the algorithms 
 that were implemented and reports the results of experiments that were run.
@@ -28,7 +29,7 @@ it was assumed that background of the image will be in colour other than any of
 the colours of the robots.
 
 
-\section{Methods}
+\section{Methods}\label{methods}
 In the following sections the three algorithms are described in detail. 
 
 TODO: simplifying assumptions
@@ -110,21 +111,23 @@ appear in some other colour than black.
         \item
         Compute the mean distance $\delta$ of the $c_k$ to $C$.
         \item
-        Set $M(i,j) = 0$ for all the pixels $(i,j)$ in those components $k$ that
-        have $c_k > \tau \delta$ for some threshold $\tau$.
+        Set $M(i,j) = 0$ for all the pixels $(i,j)$ in the components $k$ that
+        satisfy $c_k > \tau \delta$ for some fixed threshold $\tau$.
     \end{itemize}
     \item
     Exploit the fact that all robots have similar sizes by setting every channel
     in $M$ to all-zeros if the number of pixels set in that channel is smaller
     than the number of pixels set in the most populated channel by some margin.
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=40mm]{d1_i5_blob_mask.jpg}
-        \caption{Result of Robot detection}
-    \end{figure} 
 \end{enumerate} 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=40mm]{d1_i5_blob_mask.jpg}
+    \caption{Result of Robot detection}
+    \label{colorfig}
+\end{figure} 
+Figure \ref{colorfig} shows a visualisation of the output matrix $M$.
 
-\subsection{Detection of Directions}
+\subsection{Finding Robot Directions}\label{directionalgo}
 \begin{description}
 \item[Input] \hfill \\
     $I$, a three channel image of dimensions m*n in the RGB colorspace.
@@ -137,7 +140,8 @@ appear in some other colour than black.
 \begin{enumerate}
     \item
     Get a matrix of robot masks $M$ using the algorithm in Section 
-    \ref{coloralgo}. Let $M_i$ be the i$^{th}$ channel of $M$.\\
+    \ref{coloralgo}. Let $M_i$ be the i$^{th}$ channel of $M$ i.e. the set of
+    points $\{M(a,b,i) | 1 \le a \le m, 1 \le b \le n\}$.\\
     Apply the remainder of the algorithm to each channel $\xi$ in $M$.
     \item
     Calculate the convex hull $H$ of the points in the channel and create the 
@@ -151,7 +155,7 @@ appear in some other colour than black.
     The black triangles on the robots are the pixels in $\Pi$. Get rid of them
     by setting the relevant indices in $M$ to zero.\\
     Recompute the convex hull of $M$.
-    \begin{figure}[h]
+    \begin{figure}[ht]
         \begin{center}
             \subfigure[After Removing Triangles]{
                 \includegraphics[width=40mm]{d1_i5_demasked_triangles.jpg}}
@@ -159,24 +163,29 @@ appear in some other colour than black.
                 \includegraphics[width=40mm]{d1_i5_triangles.jpg}}
         \end{center}
         \caption{Triangle Detection via Local Thresholding}
+        \label{trianglefig}
     \end{figure} 
     \item
     Repeat the previous step and remember the pixels in $\Pi$. \\
     This reduces noise in $M$ by giving a tighter estimate on the robot's
     pixels when the triangles were under-detected by the algorithm in 
-    Section \ref{coloralgo}.
+    Section \ref{coloralgo}. \\
+    Figure \ref{trianglefig} shows the result of this step - a notable
+    improvement in clarity of the triangles compared to Figure \ref{colorfig}.
     \item
-    $c^m_\xi$ is the center of mass of $M_\xi$. $c^t_\xi$ is the center of 
-    mass of $\Pi$. \\
-    A line through these two points indicates the direction of the robot.
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=40mm]{d1_i5_result.jpg}
-        \caption{Detected Directions}
-    \end{figure} 
+    Update $\Lambda$: $c^m_\xi$ is the center of mass of $M_\xi$, $c^t_\xi$ is 
+    the center of mass of $\Pi$. \\
+    A line from $c^m_\xi$ to $c^t_\xi$ indicates the direction of the robot.
 \end{enumerate} 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=40mm]{d1_i5_result.jpg}
+    \caption{Detected Directions}
+    \label{directionfig}
+\end{figure} 
+Figure \ref{directionfig} shows a visualisation of the output set $\Lambda$.
 
-\subsection{Tracking of Robots}
+\subsection{Tracking Robots Over a Sequences of Frames}\label{trackingalgo}
 After having detected the robots information about them was kept in separate 
 arrays which were populated during the course of processing the data set. Each 
 array consisted of  the detected coordinates of the centre of the expected mass 
@@ -188,11 +197,11 @@ robots then were linked together with white lines in order of the appearance of
 the images they originated from. 
 
 
-\section{Results}
+\section{Results}\label{results}
 This section describes and illustrates the results of the three algorithms 
 implemented. 
 
-\subsection{Detection of Robots}
+\subsection{Detection of Robots}\label{colorresults}
 Detection of the robots was working perfectly on the two data sets provided, 
 however it's performance was lower on some of the test sets with significantly 
 different, colorful backgrounds on which error rate in some cases grow up to 10 
@@ -201,7 +210,7 @@ percent of the robot instances being  undetected.
 % with 100 images each thus about 62 out of 300 is 10
 % This section should be expanded. 
 
-\subsection{Detection of Directions}
+\subsection{Detection of Directions}\label{directionresults}
 Performance of detection of the directions was heavily dependent on the 
 performance of the detection of the robots. In case of precisely detected robot 
 detected direction perfectly matched the actual direction. 
@@ -213,7 +222,7 @@ representing the robot where omitted - detected direction was skewed on the
 side opposite (from the axis matching the actual robot's direction) to the 
 misdirected fragment of the robot. Error was proportional to the error of 
 under-detected area of the robot. 
-\begin{figure}[h]
+\begin{figure}[ht]
     \begin{center}
         \subfigure[Loose hull detection]{
             \includegraphics[width=40mm]{d2_i32_loose_detection_example.jpg}}
@@ -222,21 +231,41 @@ under-detected area of the robot.
         \subfigure[Good hull detection]{
             \includegraphics[width=40mm]{d1_i100_good_detection_example.jpg}}
     \end{center}
-    \caption{
-        Direction detections for convex hulls of different qualities}
+    \caption{Direction detections for convex hulls of different qualities}
 \end{figure} 
 
-\subsection{Tracking of the robots}
-Tracing robots, as long as they were detected was trivial and worked as good as 
-detection of the robots.
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=40mm]{d1_trace.jpg}
-    \caption{Trace of data set 1}
-\end{figure} 
+\subsection{Tracking of the robots}\label{trackingresults}
+\begin{figure}[ht]
+    \begin{center}
+    \subfigure[Dataset 1]{
+        \includegraphics[height=40mm]{d1_trace.jpg}}
+    \subfigure[Dataset 2]{
+        \includegraphics[height=40mm]{d2_trace.jpg}}
+    \end{center}
+    \caption{Output of Tracing Algorithm}
+    \label{trackingfig}
+\end{figure}
+Section \ref{trackingalgo}'s algorithm to track robots over consecutive frames
+is trivial - a mere visualisation of half of the results of the robot-direction-
+detection algorithm presented in Section \ref{directionalgo}. The tracking 
+algorithm's performance is therefore directly related to the performance of 
+the robot-direction-detection algorithm and the same observations as in Section
+\ref{directionresults} apply: generally speaking, the algorithm performed 
+well.\\
+Figure \ref{trackingfig} begets one additional observation related to the
+evaluation of the robot-tracking algorithm: both datasets considered in this
+report exhibit the property that one of the objects of interest does not move
+much for most of the frames. This entails that generating a background from
+data employing a simple frame-difference base approach (such as the median-
+filter used in Section \ref{trackingalgo}) to perform background subtraction 
+is bound to  fail as one of the objects of interest will be considered a part 
+of the background due to being mostly stationary. This is unfortunate since
+pre-processing the datasets with background subtraction would increase the
+accuracy of Section \ref{coloralgo}'s algorithm by reducing noise and increasing
+resolution in the image.
 
 
-\section{Discussion}
+\section{Discussion}\label{discussion}
 Overall performance of the algorithm can be evaluated as good. It operates 
 under little or no simplifying assumptions.
 Robot detection could be improved [WRITE PLEASE HOW]
@@ -252,7 +281,7 @@ algorithms utilise only image's colour statistics due to limited information
 about the scale of the images and the possible placements of the camera. 
 
 
-\section{Code}
+\section{Code}\label{code}
 the new Matlab code that you developed for this assignment. Do not
 include code that you downloaded from the course web pages. Any other code
 that you downloaded should be recorded in the report, but does not need to
