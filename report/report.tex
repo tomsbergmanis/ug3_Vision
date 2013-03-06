@@ -31,6 +31,20 @@ the colours of the robots.
 \section{Methods}
 In the following sections the three algorithms are described in detail. 
 
+TODO: simplifying assumptions
+\textit{
+Further detection of the direction of the robot was done under the 
+assumption that colour representing the robot is different and appears 
+differently than that of the triangle indicating it's direction. 
+Furthermore - it was assumed that the triangle will have lesser pixel 
+colour value in the channel representing robot's colour (red or green, or 
+blue) in RGB representation than the average pixel of the convex hull. 
+These assumptions can be justified by the fact that area of the triangle 
+indicating the direction of the robot constituted relatively smaller area 
+of the convex hull than the rest of the convex hull which was expected to 
+appear in some other colour than black.
+} 
+
 \subsection{Detection of Robots}\label{coloralgo}
 \begin{description}
 \item[Input] \hfill \\
@@ -111,23 +125,6 @@ In the following sections the three algorithms are described in detail.
 \end{enumerate} 
 
 \subsection{Detection of Directions}
-\textit{
-Further detection of the direction of the robot was done under the 
-assumption that colour representing the robot is different and appears 
-differently than that of the triangle indicating it's direction. 
-Furthermore - it was assumed that the triangle will have lesser pixel 
-colour value in the channel representing robot's colour (red or green, or 
-blue) in RGB representation than the average pixel of the convex hull. 
-These assumptions can be justified by the fact that area of the triangle 
-indicating the direction of the robot constituted relatively smaller area 
-of the convex hull than the rest of the convex hull which was expected to 
-appear in some other colour than black.
-} 
-\textit{
-This step gives tighter and less noisy set of pixels that represent robot's
-coloured part in some harder cases.
-}
-
 \begin{description}
 \item[Input] \hfill \\
     $I$, a three channel image of dimensions m*n in the RGB colorspace.
@@ -164,7 +161,10 @@ coloured part in some harder cases.
         \caption{Triangle Detection via Local Thresholding}
     \end{figure} 
     \item
-    Repeat the previous step and remember the pixels in $\Pi$.
+    Repeat the previous step and remember the pixels in $\Pi$. \\
+    This reduces noise in $M$ by giving a tighter estimate on the robot's
+    pixels when the triangles were under-detected by the algorithm in 
+    Section \ref{coloralgo}.
     \item
     $c^m_\xi$ is the center of mass of $M_\xi$. $c^t_\xi$ is the center of 
     mass of $\Pi$. \\
