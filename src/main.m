@@ -26,7 +26,7 @@ function res = main(path, image_type, start_offset, time_step)
        
     for i = 1 + start_offset : num_files
         image = imread(sprintf('%s/%s', path, filenames{i}));
-       	[directions, centroids] = analyse_image(image);
+        [directions, centroids] = analyse_image(image);
          
         r = uint16(centroids(1,:));
         if r(1) > 0 && r(2) > 0
@@ -40,7 +40,7 @@ function res = main(path, image_type, start_offset, time_step)
             gc(i,:) = [g(1), g(2)];
         end
 
- 	    b = uint16(centroids(3,:));
+  b = uint16(centroids(3,:));
         if b(1) > 0 && b(2) > 0
             track_mask = overlay_cross(track_mask, 3, b(1), b(2));
             bc(i,:) = [b(1), b(2)];
