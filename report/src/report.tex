@@ -114,7 +114,7 @@ that it will be in darker colour than the colour indicating the robot.
 \end{enumerate} 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=40mm]{d1_i5_blob_mask.jpg}
+    \includegraphics[width=40mm]{src/d1_i5_blob_mask.jpg}
     \caption{Result of Robot detection}
     \label{colorfig}
 \end{figure} 
@@ -151,9 +151,9 @@ Figure \ref{colorfig} shows a visualisation of the output matrix $M$.
     \begin{figure}[ht]
         \begin{center}
             \subfigure[After Removing Triangles]{
-                \includegraphics[width=40mm]{d1_i5_demasked_triangles.jpg}}
+                \includegraphics[width=40mm]{src/d1_i5_demasked_triangles.jpg}}
             \subfigure[Removed Triangles]{
-                \includegraphics[width=40mm]{d1_i5_triangles.jpg}}
+                \includegraphics[width=40mm]{src/d1_i5_triangles.jpg}}
         \end{center}
         \caption{Triangle Detection via Local Thresholding}
         \label{trianglefig}
@@ -172,7 +172,7 @@ Figure \ref{colorfig} shows a visualisation of the output matrix $M$.
 \end{enumerate} 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=40mm]{d1_i5_result.jpg}
+    \includegraphics[width=40mm]{src/d1_i5_result.jpg}
     \caption{Detected Directions}
     \label{directionfig}
 \end{figure} 
@@ -215,9 +215,9 @@ Figure \ref{trackingfig} shows a visualisation of the resulting track.
 \begin{figure}[ht]
     \begin{center}
     \subfigure[Dataset 1]{
-        \includegraphics[height=40mm]{d1_trace.jpg}}
+        \includegraphics[height=40mm]{src/d1_trace.jpg}}
     \subfigure[Dataset 2]{
-        \includegraphics[height=40mm]{d2_trace.jpg}}
+        \includegraphics[height=40mm]{src/d2_trace.jpg}}
     \end{center}
     \caption{Output of Tracing Algorithm}
     \label{trackingfig}
@@ -291,11 +291,11 @@ this is proportional to the area of the under-detected region.
 \begin{figure}[ht]
     \begin{center}
         \subfigure[Loose hull detection]{
-            \includegraphics[width=40mm]{d2_i32_loose_detection_example.jpg}}
+            \includegraphics[width=40mm]{src/d2_i32_loose_detection_example.jpg}}
         \subfigure[Hull under detection]{
-            \includegraphics[width=40mm]{d4_i66_bad_detection_example.jpg}}
+            \includegraphics[width=40mm]{src/d4_i66_bad_detection_example.jpg}}
         \subfigure[Good hull detection]{
-            \includegraphics[width=40mm]{d1_i100_good_detection_example.jpg}}
+            \includegraphics[width=40mm]{src/d1_i100_good_detection_example.jpg}}
     \end{center}
     \caption{Direction detections for convex hulls of different qualities}
 \end{figure} 
