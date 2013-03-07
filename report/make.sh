@@ -9,6 +9,9 @@ matlab_file="$src_dir/code.m"
 pdf_file="$src_dir/$(basename $tex_file .tex).pdf"
 report_file="$report_dir/$(basename $tex_file .tex)-full.pdf"
 
+# spell check latex file
+ispell -t $tex_file
+
 # print source files to HTML and then to PDF
 if [ -f $matlab_file ]; then
     rm $matlab_file

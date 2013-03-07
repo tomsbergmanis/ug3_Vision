@@ -23,12 +23,12 @@ This makes general-purpose object tracking a tremendous challenge - and means
 that object tracking systems will limit themselves to function under some 
 simplifying assumptions and for some specific, well defined task only
 \cite{REF}.\\
-This report presents an algoritm to track circular red, blue, and green robots 
+This report presents an method to track circular red, blue, and green robots 
 under varying illumination and scene background conditions. The algorithm is
 described in Section \ref{methods} (a sample MATLAB implementation is provided 
-as an appendix). Section \ref{results} evaluates the algorithm's performance
-under a number of different capture conditions. The results and possible avenues
-for improvement are discussed in Section \ref{discussion}.
+as an appendix). Section \ref{results} reports the object tracker's performance
+in different capture environments. The results of this evaluation and possible 
+avenues for improvement are discussed in Section \ref{discussion}.
 
 
 \section{Methods}\label{methods}
@@ -52,7 +52,7 @@ It was assumed that:
 \subsection{Detection of Robots}\label{coloralgo}
 \begin{description}
 \item[Input] \hfill \\
-    $I$, a three channel image of dimensions $m \times n$ in the RGB colorspace.
+    $I$, a three channel image of dimensions $m \times n$ in the RGB colour-space.
 \item[Output] \hfill \\
     $M$, a $m \times n \times 3$ binary matrix where for each pixel $P_{ij}$ of
     $I$, it holds that: \\
@@ -82,12 +82,12 @@ It was assumed that:
         Normalise $P$'s red, green, and blue values, giving $P_n$.
         \item
         Calculate the probabilities $p_r, p_g, p_b$ that $P_n$ was generated 
-        by the gaussian distributions $\mathcal{N}_r = (\mu_r, \sigma_r),
+        by the Gaussian distributions $\mathcal{N}_r = (\mu_r, \sigma_r),
         \mathcal{N}_g = (\mu_g, \sigma_g), \mathcal{N}_b = (\mu_b, \sigma_b)$.
         \item
         Calculate $P$'s hue value $h$.
         \item
-        If $h$ is whithin a certain range defined as red and $p_r$ is
+        If $h$ is within a certain range defined as red and $p_r$ is
         sufficiently small, set $M(i,j,1) = 1$ (similarly for ranges defined as
         green/blue and $p_g$/$p_b$. If none of these conditions are met, set
         $M(i,j,1) = M(i,j,2) = M(i,j,3) = 0$.
@@ -107,9 +107,9 @@ It was assumed that:
     each channel in $M$:
     \begin{itemize}
         \item
-        Compute the center of mass $C$ of the channel.
+        Compute the centre of mass $C$ of the channel.
         \item
-        Compute $c_1, c_2, \ldots$, the centers of mass of each connected 
+        Compute $c_1, c_2, \ldots$, the centres of mass of each connected 
         component in the channel.
         \item
         Compute the mean distance $\delta$ of the $c_k$ to $C$.
@@ -133,10 +133,10 @@ Figure \ref{colorfig} shows a visualisation of the output matrix $M$.
 \subsection{Finding Robot Directions}\label{directionalgo}
 \begin{description}
 \item[Input] \hfill \\
-    $I$, a three channel image of dimensions $m \times n$ in the RGB colorspace.
+    $I$, a three channel image of dimensions $m \times n$ in the RGB colour-space.
 \item[Output] \hfill \\
     $\Lambda = \{(c^m_r, c^t_r), (c^m_g, c^t_g), (c^m_b, c^t_b)\}$, a set where
-    $c^m_r$ is the center of mass of the red robot and $c^t_r$ is the point 
+    $c^m_r$ is the centre of mass of the red robot and $c^t_r$ is the point 
     towards which the robot is facing (similarly for the green and blue robots).
 \end{description}
 \textbf{Algorithm}
@@ -176,8 +176,8 @@ Figure \ref{colorfig} shows a visualisation of the output matrix $M$.
     Figure \ref{trianglefig} shows the result of this step - a notable
     improvement in clarity of the triangles compared to Figure \ref{colorfig}.
     \item
-    Update $\Lambda$: $c^m_\xi$ is the center of mass of $M_\xi$, $c^t_\xi$ is 
-    the center of mass of $\Pi$. \\
+    Update $\Lambda$: $c^m_\xi$ is the centre of mass of $M_\xi$, $c^t_\xi$ is 
+    the centre of mass of $\Pi$. \\
     A line from $c^m_\xi$ to $c^t_\xi$ indicates the direction of the robot.
 \end{enumerate} 
 \begin{figure}[ht]
@@ -192,7 +192,7 @@ Figure \ref{directionfig} shows a visualisation of the output set $\Lambda$.
 \begin{description}
 \item[Input] \hfill \\
     $\Upsilon = \{I_1, I_2, \cdots\}$, a sequence where each of the $I_i$ is a 
-    three channel image of dimensions $m \times n$ in the RGB colorspace.
+    three channel image of dimensions $m \times n$ in the RGB colour-space.
 \item[Output] \hfill \\
     $\Omega$, a visualisation of the robot positions over $\Upsilon$.
 \end{description}
@@ -204,7 +204,7 @@ Figure \ref{directionfig} shows a visualisation of the output set $\Lambda$.
     \begin{itemize}
         \item
         Create $\omega_{ij} = \{I_k(i,j) | I_k \in \Upsilon\}$, the set of the 
-        colors of the pixels at location $(i,j)$ of all the images in 
+        colours of the pixels at location $(i,j)$ of all the images in 
         $\Upsilon$.
         \item
         Set $\Omega(i,j) = median(\omega_{ij})$.
@@ -224,9 +224,9 @@ Figure \ref{directionfig} shows a visualisation of the output set $\Lambda$.
 Figure \ref{trackingfig} shows a visualisation of the resulting track.
 \begin{figure}[ht]
     \begin{center}
-    \subfigure[Dataset 1]{
+    \subfigure[Data-set 1]{
         \includegraphics[height=40mm]{src/d1_trace.jpg}}
-    \subfigure[Dataset 2]{
+    \subfigure[Data-set 2]{
         \includegraphics[height=40mm]{src/d2_trace.jpg}}
     \end{center}
     \caption{Output of Tracing Algorithm}
@@ -238,15 +238,15 @@ Figure \ref{trackingfig} shows a visualisation of the resulting track.
 This section evaluates and visualises the performance of the three algorithms 
 presented in Sections \ref{coloralgo}, \ref{directionalgo}, and 
 \ref{trackingalgo}. Table \ref{datasetpropstable} describes the properties of 
-the datasets used for this evaluation.
+the data-sets used for this evaluation.
 \begin{table}[ht]
 \begin{tabular}{|l || l | l | p{2cm} | p{4cm}|}
 \hline
-\# & Background & Robot Size & Robot Color & Illumination \\
+\# & Background & Robot Size & Robot Colour & Illumination \\
 \hline
-1 & uniform, gray & large & saturated, dark & uniform, red hue \\
+1 & uniform, grey & large & saturated, dark & uniform, red hue \\
 \hline
-2 & noisy, gray & small & faded, blue robot is cyan & 
+2 & noisy, grey & small & faded, blue robot is cyan & 
     histograms are bell-shaped \\
 \hline
 3 & patterned, brown & large & saturated & daylight only \\
@@ -255,29 +255,29 @@ the datasets used for this evaluation.
     light \\
 \hline
 \end{tabular}
-\caption{Properties of evaluation datasets}
+\caption{Properties of evaluation data-sets}
 \label{datasetpropstable}
 \end{table}
 
 \subsection{Detection of Robots}\label{colorresults}
 The algorithm described in Section \ref{coloralgo}, worked perfectly on 
-datasets 1 and 2.
-Evaluation on the third dataset led to the worst performance over all datasets, 
-with $\sim$60\% of the occurences of the blue robot being undetected and 
-$\sim$40\% of the occurences of the green robot being under-detected (leading 
+data-sets 1 and 2.
+Evaluation on the third data-set led to the worst performance over all data-sets, 
+with $\sim$60\% of the occurrences of the blue robot being undetected and 
+$\sim$40\% of the occurrences of the green robot being under-detected (leading 
 to bad direction detection).
-The performance on the fourth dataset was interesting: the red robot was under-
+The performance on the fourth data-set was interesting: the red robot was under-
 detected in $\sim$45\% of the cases (with the blue and green robots being
-found just fine) - while in the other datasets the red robot was usually
+found just fine) - while in the other data-sets the red robot was usually
 detected with the highest confidence.
-Over all four datasets, about 10\% of the robot instances were badly detected.\\
-The fact that the color-detection algorithm works well on both datasets 1 and 2
+Over all four data-sets, about 10\% of the robot instances were badly detected.\\
+The fact that the colour-detection algorithm works well on both data-sets 1 and 2
 leads to the conjecture that it is invariant under texture changes in the scene 
-background and variations in robot-color saturation.
-The bad performance on dataset 3 can be explained by interference from the color
+background and variations in robot-colour saturation.
+The bad performance on data-set 3 can be explained by interference from the colour
 of the scene background and by changes in scene illumination. The fact that the
-algorithm offers almost top-level performance on dataset 4 (captured on the same
-background as dataset 3) implies that the change in scene illumination is
+algorithm offers almost top-level performance on data-set 4 (captured on the same
+background as data-set 3) implies that the change in scene illumination is
 probably the largest influence on the algorithm's performance.\\
 This is in keeping with the intuition that daylight has more inherent variation
 than artificial light, thus introducing a higher degree of variability into the
@@ -294,8 +294,8 @@ due to the algorithm's ability to filter-out noisy detections.\\
 In case of under-detection - false negative cases where some parts of the image
 representing the robot where not detected - the algorithm breaks: the predicted
 direction is skewed towards the opposite side of the under-detection. This is
-due to the algorithm not putting strict circular or elipsoidal constraints on 
-the shape of the robots: under detection is thus able to move the center of 
+due to the algorithm not putting strict circular or ellipsoidal constraints on 
+the shape of the robots: under detection is thus able to move the centre of 
 mass of either the triangle or the robot-convex-hull. The error introduced by 
 this is proportional to the area of the under-detected region.
 \begin{figure}[ht]
@@ -319,14 +319,14 @@ the robot-direction-detection algorithm and the same observations as in Section
 \ref{directionresults} apply: generally speaking, the algorithm performed 
 well.\\
 Figure \ref{trackingfig} begets one additional observation related to the
-evaluation of the robot-tracking algorithm: both datasets considered in this
+evaluation of the robot-tracking algorithm: both data-sets considered in this
 report exhibit the property that one of the objects of interest does not move
 much for most of the frames. This entails that generating a background from
 data employing a simple frame-difference base approach (such as the median-
 filter used in Section \ref{trackingalgo}) to perform background subtraction 
 is bound to  fail as one of the objects of interest will be considered a part 
 of the background due to being mostly stationary. This is unfortunate since
-pre-processing the datasets with background subtraction would increase the
+pre-processing the data-sets with background subtraction would increase the
 accuracy of Section \ref{coloralgo}'s algorithm by reducing noise and increasing
 resolution in the image.
 
@@ -334,16 +334,16 @@ resolution in the image.
 \section{Discussion}\label{discussion}
 The algorithms in Sections \ref{coloralgo}, \ref{directionalgo}, and 
 \ref{trackingalgo} operate under a limited number of reasonable simplifying
-assumptions and performed well across a range of datasets captured under very
+assumptions and performed well across a range of data-sets captured under very
 different conditions.\\
-The robot color detection algorithm of Section \ref{coloralgo} could be improved
+The robot colour detection algorithm of Section \ref{coloralgo} could be improved
 by adding more stringent conditions on the shape of the robots e.g. fitting a
 circle or ellipse to them rather than a convex hull. This should improve the
 subsequent performance of the direction-detection algorithm by reducing the
 amount of under-detections.\\
 If assumptions about the size, scale, and shape of the robots can be made, Hugh 
 transforms or other shape-based techniques could be used to detect the robots.
-This would be more robust than the current color/pixel based approach but not 
+This would be more robust than the current colour/pixel based approach but not 
 invariant under scale or differences in camera positions.\\
 Another way to improve the detection of the robots could be augmenting the
 current approach with the utilisation of second order spatial image statistics
@@ -351,13 +351,13 @@ to pre-process the images. This would lead to a rough estimate of the robot
 positions with few false negatives, thus improving the currently utilised
 algorithms due to a reduced search space (implying a denser signal). A reduced
 search space also allows for computationally expensive but high-precision 
-techniques to be used. One example of such a technique is a local color-based
+techniques to be used. One example of such a technique is a local colour-based
 search starting from a small seed of pixels that are hypothesised to be part of
 a robot.\\
 Direction detection could be improved by making it less dependent on the
 accuracy of the robot detection. One way to achieve this would be to base the 
 direction calculation on properties of the detected triangles (e.g. direction =
-tangent line to the longest side) rather than on the triangles' centers of 
+tangent line to the longest side) rather than on the triangles' centres of 
 mass. This would increase robustness to under-detections.\\
 Cross-frame tracking could be improved by abusing spatio-temporal proximity. One
 way to do this would be put a cap on how far the centroid of the robot can move 
