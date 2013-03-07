@@ -12,20 +12,26 @@
 \maketitle
 
 \section{Introduction}\label{intro}
-
-The goal of this report is to propose an algorithm for object tracking. 
-Object tracking, in general, is a challenging problem. Difilties in tracking 
-objects can arise due to abrupt object motion or changing appearance patterns 
-of both the object and its surroundings and other factors. Tracking is usually 
-performed in the context of higher-level applications that require the location 
-and/or shape of the object in every frame. Typically, assumptions are made to 
-constrain the tracking problem in the context of a particular application
-\cite{REF}.
-
+Finding (known) objects of interest in an image and following those objects over
+a sequence of frames is called object tracking. Its applications are manifold,
+ranging from augmented reality to medical imaging.\\
+Inter-frame and intra-frame variability make the task a challenging one:
+difficulties in tracking can arise due to abrupt object motion, changing 
+appearance patterns of both the object and its surroundings, dropped frames,
+image noise, and many other factors.\\
+This makes general-purpose object tracking a tremendous challenge - and means
+that object tracking systems will limit themselves to function under some 
+simplifying assumptions and for some specific, well defined task only
+\cite{REF}.\\
+This report presents an algoritm to track circular red, blue, and green robots 
+under varying illumination and scene background conditions. The algorithm is
+described in Section \ref{methods} (a sample MATLAB implementation is provided 
+as an appendix). Section \ref{results} evaluates the algorithm's performance
+under a number of different capture conditions. The results and possible avenues
+for improvement are discussed in Section \ref{discussion}.
 
 
 \section{Methods}\label{methods}
-
 Several simplifying assumptions were made to constrain the tracking problem.
 It was assumed that:
 \begin{enumerate}
@@ -41,7 +47,6 @@ It was assumed that:
     \item
     The background of the scene will have a different colour than the robots.
 \end{enumerate}
-
 
 
 \subsection{Detection of Robots}\label{coloralgo}
