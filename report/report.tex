@@ -13,38 +13,32 @@
 \maketitle
 
 \section{Introduction}\label{intro}
-This report describes the work done for the first assignment in the IVR course. 
-It gives the aims and hypotheses that guided the work; describes the algorithms 
-that were implemented and reports the results of experiments that were run.
-The goal of this assignment was to develop three algorithms: one that detects 
-the robots in each image, one that correctly identifies the direction of the 
-robot and one that links together detections of the robots in consecutive 
-images. 
-Several simplifying assumptions were made about the possible set-ups of the 
-assignment.  Firstly, it was assumed that colours of the robots may change only 
-due to the light it is exposed to, thus giving a rise to an assumption that 
-robots will each appear in various shades of red or blue or green. Secondly, it 
-was assumed that camera will be set up in some reasonable angle with respect to 
-the plane it is supposed to observe. Finally, due to colour dependant approach 
-it was assumed that background of the image will be in colour other than any of 
-the colours of the robots.
+The goal of this report is to propose an algorithm for object tracking. 
+Object tracking, in general, is a challenging problem. Difﬁculties in tracking 
+objects can arise due to abrupt object motion or changing appearance patterns
+ of both the object and its surroundings and other factors. Tracking is 
+usually performed in the context of higher-level applications that require 
+the location and/or shape of the object in every frame. Typically, assumptions
+ are made to constrain the tracking problem 
+in the context of a particular application\cite{REF}.
 
 
 \section{Methods}\label{methods}
-In the following sections the three algorithms are described in detail. 
-%TODO: rewrite simplifying assumptions
-\textit{
-Further detection of the direction of the robot was done under the 
-assumption that colour representing the robot is different and appears 
-differently than that of the triangle indicating it's direction. 
-Furthermore - it was assumed that the triangle will have lesser pixel 
-colour value in the channel representing robot's colour (red or green, or 
-blue) in RGB representation than the average pixel of the convex hull. 
-These assumptions can be justified by the fact that area of the triangle 
-indicating the direction of the robot constituted relatively smaller area 
-of the convex hull than the rest of the convex hull which was expected to 
-appear in some other colour than black.
-} 
+
+Several simplifying assumptions were made to constrain the tracking problem.
+It was assumed that:
+\begin{enumerate}
+\item objects to be tracked will be puck-like robots and that they will 
+each appear in different shades of red or blue, or green.
+\item camera will be set up in an angle not less than 45\% with respect to the 
+plane it is observing. 
+\item on the top of the robot will be a triangle indicating it's direction and 
+that it will be in darker colour than the colour indicating the robot.  
+\item background of the image will be in colour other than any of the
+ colours of the robots.
+\end{enumerate}
+
+
 
 \subsection{Detection of Robots}\label{coloralgo}
 \begin{description}
@@ -364,4 +358,10 @@ prediction.
 
 \section{Code}\label{code}
 
+\bibliographystyle{IEEEtran}
+\begin{thebibliography}{10}
+\bibitem{REF} Yilmaz, A., Javed, O., and Shah, M., 
+``Object Tracking: A Survey'', 
+ACM Comput. Surv. 38, 4, Article 13, 2006.  
+\end{thebibliography}
 \end{document}
