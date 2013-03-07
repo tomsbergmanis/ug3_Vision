@@ -330,12 +330,21 @@ pre-processing the data-sets with background subtraction would increase the
 accuracy of Section \ref{coloralgo}'s algorithm by reducing noise and increasing
 resolution in the image.
 
-
 \section{Discussion}\label{discussion}
 The algorithms in Sections \ref{coloralgo}, \ref{directionalgo}, and 
 \ref{trackingalgo} operate under a limited number of reasonable simplifying
 assumptions and performed well across a range of data-sets captured under very
 different conditions.\\
+The development of those algorithms involved implementation and evaluation of different approaches. 
+Reported algorithms are the most successful ones among them. 
+Some of the less successful approaches involved histogram thresholding and histogram smoothing.
+ These approaches were rejected because of difficulty to learn their parameters. 
+Others involved top-down clusterization methods such as k-means clustering. 
+These methods were rejected because of difficulty to detect number of clusters in general case.\\
+  
+
+
+\subsection{Further work}\label{furtherwork}
 The robot colour detection algorithm of Section \ref{coloralgo} could be improved
 by adding more stringent conditions on the shape of the robots e.g. fitting a
 circle or ellipse to them rather than a convex hull. This should improve the
@@ -363,6 +372,7 @@ Cross-frame tracking could be improved by abusing spatio-temporal proximity. One
 way to do this would be put a cap on how far the centroid of the robot can move 
 in a certain frame interval, thus smoothing out the odd completely wrong 
 prediction.
+
 
 \bibliographystyle{IEEEtran}
 \begin{thebibliography}{10}
