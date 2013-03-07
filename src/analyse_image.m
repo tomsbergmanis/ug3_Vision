@@ -4,10 +4,8 @@ function [pretty_mask, varargout] = analyse_image(image)
     [convex_mask, ~] = mask_convex_regions(image, blob_mask);
     [convex_mask]=demask_triangles(image, convex_mask, false);
     [convex_mask, ~] = mask_convex_regions(image, convex_mask);
-    
     [~, centroids, ~, triangle_centroids] = ...
                                 demask_triangles(image, convex_mask, true);
-
     pretty_mask = overlay_rays(zeros(num_rows,num_cols,num_channels),...
                                 centroids,triangle_centroids, 99, ...
                                'Color', [1 0 0; 0 1 0; 0 0 1]);
@@ -24,7 +22,8 @@ end
 %    [convex_mask, ~] = mask_convex_regions(image, blob_mask);
 %    [convex_mask]=demask_triangles(image, convex_mask, false);
 %    [convex_mask, ~] = mask_convex_regions(image, convex_mask);
-function [mask, varargout] = demask_triangles(image, mask, get_triangle_centroids)
+function [mask, varargout] = demask_triangles(image, mask, ...
+                                              get_triangle_centroids)
     [num_rows, num_cols, num_channels] = size(image);
     centroids = zeros(num_channels, 2);
     triangle_centroids  = zeros(num_channels, 2);
@@ -49,7 +48,6 @@ function [mask, varargout] = demask_triangles(image, mask, get_triangle_centroid
         end
         mean_rgb = mean(rgb_values(:));
         channel_mask(channel < mean_rgb) = 0;
-        
         mask(:,:,c) = channel_mask;
         props = regionprops(channel_mask, 'Centroid');
         centroid = props.Centroid;
@@ -66,15 +64,12 @@ function [mask, varargout] = demask_triangles(image, mask, get_triangle_centroid
     varargout{1} = centroids;
     varargout{2} = trinagle_mask;
     varargout{3} = triangle_centroids;
-    
 end
-
 
 
 function [color_mask, varargout] = mask_convex_regions(image, mask)
     [num_rows, num_cols, num_channels] = size(image);
     color_mask = zeros(num_rows, num_cols, num_channels);
-
     convex_centroids = zeros(num_channels, 2);
     for c = 1 : num_channels
         channel = mask(:,:,c);
@@ -107,9 +102,7 @@ function image_mask = mask_colors(image)
     [num_rows, num_cols, ~] = size(image);
     num_pixels = num_rows * num_cols;
     image_mask = zeros(num_pixels, 3);
-
     rgb = double(reshape(image, num_pixels, 3));
-
     rgbN = double(reshape(normalise_rgb(image, 'approximate'), num_pixels, 3));
     rN_sdev = std(rgbN(:,1));
     gN_sdev = std(rgbN(:,2));
@@ -117,15 +110,12 @@ function image_mask = mask_colors(image)
     rN_mean = mean(rgbN(:,1));
     gN_mean = mean(rgbN(:,2));
     bN_mean = mean(rgbN(:,3));
-
     hsv = reshape(rgb2hsv(image), num_pixels, 3);
-  
     for c = 1 : num_pixels
         rN = rgbN(c,1);
         gN = rgbN(c,2);
         bN = rgbN(c,3);
         hue = hsv(c,1) * 360;
-        value = hsv(c,3) * 100;
         % current pixel is red
         if      (hue >= 330 || hue <= 30) && ...
                 (normal_prob(rN, rN_mean, rN_sdev) <  0.001)
@@ -140,9 +130,7 @@ function image_mask = mask_colors(image)
                    image_mask(c,3) = 1;
         end
     end
-
     image_mask = reshape(image_mask, num_rows, num_cols, 3);
-
     image_mask = remove_noise(image_mask);
     image_mask = remove_outliers(image_mask);
     image_mask = enforce_similar_channel_areas(image_mask);
@@ -175,7 +163,6 @@ function image = remove_outliers(image, distance_proportion_threshold)
     if nargin < 2
         distance_proportion_threshold = 0.5;
     end
-
     [~, ~, num_channels] = size(image);
     for c = 1 : num_channels
         channel = image(:,:,c);
@@ -208,7 +195,6 @@ function image = enforce_similar_channel_areas(image, area_proportion_threshold)
     if nargin < 2
         area_proportion_threshold = 0.5;
     end
-
     [~, ~, num_channels] = size(image);
     areas = zeros(num_channels, 1);
     for c = 1 : num_channels
@@ -232,57 +218,53 @@ function image = enforce_similar_channel_areas(image, area_proportion_threshold)
     end
 end
 
-%this filters out all conneceted regions but the biggest one
+
+% this filters out all conneceted regions but the biggest one
 function mask = filter_mask(mask)
     [x, y, num_channels] = size(mask);
-    
     for c = 1 : num_channels
-        channel=zeros(x,y);
-        channel=reshape(channel, x*y,1);
-        blob_info=bwconncomp(mask(:,:,c));
-        blob_list=blob_info.PixelIdxList;
+        channel = zeros(x, y);
+        channel = reshape(channel, x * y, 1);
+        blob_info = bwconncomp(mask(:,:,c));
+        blob_list = blob_info.PixelIdxList;
         [nrows, ncols] = cellfun(@size, blob_list);
-        largest_blob_pixels=blob_list{find(nrows == max(nrows))};
-        for i=1 : max(nrows)
-            channel(largest_blob_pixels(i))=1;
+        largest_blob_pixels = blob_list{find(nrows == max(nrows))};
+        for i = 1 : max(nrows)
+            channel(largest_blob_pixels(i)) = 1;
         end
-        channel=reshape(channel, x,y);
-        mask(:,:,c)=channel;
+        channel = reshape(channel, x, y);
+        mask(:,:,c) = channel;
     end
 end
 
-%function points = find_directions	(mask)
-%    points = [];
-%    [x, y, num_channels] = size(mask);
-%    a = [0 0];
-%    b = [0 0];
-%    c = [0 0];
-%    for j = 1 : num_channels
-%        cor=corner(mask(:,:,j), 3);
-%        for i = 1 : 3
-%           t=cor(i,:);
-%           cor(i,:)=[t(2) t(1)]
-%        end
-%        d1= sqrt(sum((cor(1,:) - cor(2,:)) .^ 2));
-%        d2= sqrt(sum((cor(2,:) - cor(3,:)) .^ 2));
-%        d3= sqrt(sum((cor(1,:) - cor(3,:)) .^ 2));
-%        if d1>d2 && d1>d3
-%            a=cor(1,:);
-%            b=cor(2,:);
-%            c=cor(3,:);
-%        end
-%        if d2>d1 && d2>d3
-%            a=cor(2,:);
-%            b=cor(3,:);
-%            c=cor(1,:);
-%        end
-%        if d1>d2 && d1>d3
-%            a=cor(1,:);
-%            b=cor(3,:);
-%            c=cor(2,:);
-%        end
-%        midpoint=(a+b)/2;
-%        points=[points;midpoint];
-%        points=[points;c];
-%    end
-%end
+
+% normalises the values of the red, green, and blue channels of |image| in order
+% to eliminate illumination differences in the image
+% formula used: {r, g, b} = {r, g, b} / sqrt(r^2 + g^2 + b^2)
+% if 'approximate' is passed as an additional parameter, instead use
+% {r, g, b} = {r, g, b} / (r + g + b) 
+% this is approximately two times faster than the exact normalisation
+function normalised_image = normalise_rgb(image, varargin)
+    approximate = ~isempty(find(strcmpi(varargin, 'approximate')));
+    red = double(image(:,:,1));
+    green = double(image(:,:,2));
+    blue = double(image(:,:,3));
+    if approximate
+        euclid_rgb = red(:,:) + green(:,:) + blue(:,:);
+    else
+        euclid_rgb = sqrt(red(:,:).^2 + green(:,:).^2 + blue(:,:).^2);
+    end
+    red_norm = round(red(:,:) ./ euclid_rgb .* 255);
+    green_norm = round(green(:,:) ./ euclid_rgb .* 255);
+    blue_norm = round(blue(:,:) ./ euclid_rgb .* 255);
+    % some pixels are absolute black (r = g = b = 0) which causes division by
+    % zero errors during normalisation and NaN values in the normalised channels
+    % need to filter these values out
+    red_norm(isnan(red_norm)) = 0;
+    green_norm(isnan(green_norm)) = 0;
+    blue_norm(isnan(blue_norm)) = 0;
+    red_norm = uint8(red_norm);
+    green_norm = uint8(green_norm);
+    blue_norm = uint8(blue_norm);
+    normalised_image = cat(3, red_norm, green_norm, blue_norm);
+end

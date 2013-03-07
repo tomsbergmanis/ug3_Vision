@@ -1,4 +1,4 @@
-% returns image with a lines drawn from the nth point in |points| to the n+1th
+% returns image with lines drawn from the nth point in |points| to the n+1th
 % [0, 0] is the top left corner of the image
 function image = overlay_polygon(image, points, color)
     if nargin < 3
