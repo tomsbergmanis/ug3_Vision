@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>~/Desktop/ug3_Vision/src/overlay_polygon.m.html</title>
+<meta name="Generator" content="Vim/7.2">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<body bgcolor="#ffffff" text="#808080"><font face="monospace">
+<font color="#0000ff"><b>&nbsp;1 </b></font><span style="background-color: #ffffff"><font color="#808080"><b>% returns image with lines drawn from the nth point in |points| to the n+1th</b></font></span><br>
+<font color="#0000ff"><b>&nbsp;2 </b></font><span style="background-color: #ffffff"><font color="#808080"><b>% [0, 0] is the top left corner of the image</b></font></span><br>
+<font color="#0000ff"><b>&nbsp;3 </b></font><font color="#000000">function</font>&nbsp;image = overlay_polygon(image, points, color)<br>
+<font color="#0000ff"><b>&nbsp;4 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">if</font>&nbsp;nargin <font color="#0000ff">&lt;</font>&nbsp;<span style="background-color: #ffffff"><font color="#ff6060"><b>3</b></font></span><br>
+<font color="#0000ff"><b>&nbsp;5 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color = <font color="#000000">[</font><span style="background-color: #ffffff"><font color="#ff6060"><b>255</b></font></span>&nbsp;<span style="background-color: #ffffff"><font color="#ff6060"><b>255</b></font></span>&nbsp;<span style="background-color: #ffffff"><font color="#ff6060"><b>255</b></font></span><font color="#000000">]</font><span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>&nbsp;6 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>&nbsp;7 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<font color="#0000ff"><b>&nbsp;8 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;points = <font color="#0000ff">round</font>(points)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>&nbsp;9 </b></font><br>
+<font color="#0000ff"><b>10 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;num_channels = <font color="#0000ff">size</font>(image, <span style="background-color: #ffffff"><font color="#ff6060"><b>3</b></font></span>)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>11 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">for</font>&nbsp;c = <span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span>&nbsp;: num_channels<br>
+<font color="#0000ff"><b>12 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;channel = image(:,:,c)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>13 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;channel = overlay_polygon_channel(channel, points, color(c))<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>14 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image(:,:,c) = channel<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>15 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>16 </b></font><font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>17 </b></font><br>
+<font color="#0000ff"><b>18 </b></font><br>
+<font color="#0000ff"><b>19 </b></font><span style="background-color: #ffffff"><font color="#808080"><b>% Bresenham's line algorithm (simplified version)</b></font></span><br>
+<font color="#0000ff"><b>20 </b></font><span style="background-color: #ffffff"><font color="#808080"><b>% <a href="http://en.wikipedia.org/wiki/Bresenham">http://en.wikipedia.org/wiki/Bresenham</a>'s_line_algorithm#Simplification</b></font></span><br>
+<font color="#0000ff"><b>21 </b></font><font color="#000000">function</font>&nbsp;channel = overlay_polygon_channel(channel, points, color)<br>
+<font color="#0000ff"><b>22 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000000">[</font>xmax, ymax<font color="#000000">]</font>&nbsp;= <font color="#0000ff">size</font>(channel)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>23 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">for</font>&nbsp;c = <span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span>&nbsp;: length(points) <font color="#0000ff">-</font>&nbsp;<span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span><br>
+<font color="#0000ff"><b>24 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start = points(c,:)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>25 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop = points(c <font color="#0000ff">+</font>&nbsp;<span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span>,:)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>26 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x0 = start(<span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span>)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>27 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y0 = start(<span style="background-color: #ffffff"><font color="#ff6060"><b>2</b></font></span>)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>28 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x1 = stop(<span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span>)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>29 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y1 = stop(<span style="background-color: #ffffff"><font color="#ff6060"><b>2</b></font></span>)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>30 </b></font><br>
+<font color="#0000ff"><b>31 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dx = <font color="#0000ff">abs</font>(x1 <font color="#0000ff">-</font>&nbsp;x0)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>32 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dy = <font color="#0000ff">abs</font>(y1 <font color="#0000ff">-</font>&nbsp;y0)<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>33 </b></font><br>
+<font color="#0000ff"><b>34 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">if</font>&nbsp;x0 <font color="#0000ff">&lt;</font>&nbsp;x1<br>
+<font color="#0000ff"><b>35 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sx = <span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span><span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>36 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">else</font><br>
+<font color="#0000ff"><b>37 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sx = <font color="#0000ff">-</font><span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span><span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>38 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>39 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">if</font>&nbsp;y0 <font color="#0000ff">&lt;</font>&nbsp;y1<br>
+<font color="#0000ff"><b>40 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sy = <span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span><span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>41 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">else</font><br>
+<font color="#0000ff"><b>42 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sy = <font color="#0000ff">-</font><span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span><span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>43 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>44 </b></font><br>
+<font color="#0000ff"><b>45 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err = dx <font color="#0000ff">-</font>&nbsp;dy<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>46 </b></font><br>
+<font color="#0000ff"><b>47 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">while</font>&nbsp;<span style="background-color: #ffffff"><font color="#ff6060"><b>1</b></font></span><br>
+<font color="#0000ff"><b>48 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">if</font>&nbsp;x0 <font color="#0000ff">&gt;</font>&nbsp;<span style="background-color: #ffffff"><font color="#ff6060"><b>0</b></font></span>&nbsp;<font color="#0000ff">&amp;&amp;</font>&nbsp;x0 <font color="#0000ff">&lt;=</font>&nbsp;xmax <font color="#0000ff">&amp;&amp;</font>&nbsp;y0 <font color="#0000ff">&gt;</font>&nbsp;<span style="background-color: #ffffff"><font color="#ff6060"><b>0</b></font></span>&nbsp;<font color="#0000ff">&amp;&amp;</font>&nbsp;y0 <font color="#0000ff">&lt;=</font>&nbsp;ymax<br>
+<font color="#0000ff"><b>49 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;channel(x0, y0) = color<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>50 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>51 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">if</font>&nbsp;x0 <font color="#0000ff">==</font>&nbsp;x1 <font color="#0000ff">&amp;&amp;</font>&nbsp;y0 <font color="#0000ff">==</font>&nbsp;y1<br>
+<font color="#0000ff"><b>52 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">break</font><span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>53 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>54 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e2 = <span style="background-color: #ffffff"><font color="#ff6060"><b>2</b></font></span>&nbsp;<font color="#0000ff">*</font>&nbsp;err<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>55 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">if</font>&nbsp;e2 <font color="#0000ff">&gt;</font>&nbsp;<font color="#0000ff">-</font>dy<br>
+<font color="#0000ff"><b>56 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err = err <font color="#0000ff">-</font>&nbsp;dy<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>57 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x0 = x0 <font color="#0000ff">+</font>&nbsp;sx<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>58 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>59 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">if</font>&nbsp;e2 <font color="#0000ff">&lt;</font>&nbsp;dx<br>
+<font color="#0000ff"><b>60 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err = err <font color="#0000ff">+</font>&nbsp;dx<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>61 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y0 = y0 <font color="#0000ff">+</font>&nbsp;sy<span style="background-color: #ffffff"><font color="#808080"><b>;</b></font></span><br>
+<font color="#0000ff"><b>62 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>63 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>64 </b></font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff">end</font><br>
+<font color="#0000ff"><b>65 </b></font><font color="#0000ff">end</font><br>
+</font></body>
+</html>
