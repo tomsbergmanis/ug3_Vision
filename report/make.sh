@@ -14,13 +14,16 @@ if [ -f $matlab_file ]; then
     rm $matlab_file
 fi
 for f in $(find $code_dir -maxdepth 1 -type f -name '*.m' | sort); do
+    echo "%%%%%%% file: $(basename $f) %%%%%%%" >> $matlab_file
     cat $f >> $matlab_file
     echo >> $matlab_file
     echo >> $matlab_file
 done
 for f in $(find $code_dir -mindepth 2 -type f -name '*.m' -not -path '*/.*/*' \
            | sort); do
+    echo "%%%%%%% file: $(basename $f) %%%%%%%" >> $matlab_file
     cat $f >> $matlab_file
+    echo "%%%%%%% end of file: $(basename $f) %%%%%%%" >> $matlab_file
     echo >> $matlab_file
     echo >> $matlab_file
 done
