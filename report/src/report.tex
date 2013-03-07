@@ -12,14 +12,16 @@
 \maketitle
 
 \section{Introduction}\label{intro}
+
 The goal of this report is to propose an algorithm for object tracking. 
-Object tracking, in general, is a challenging problem. Difﬁculties in tracking 
-objects can arise due to abrupt object motion or changing appearance patterns
- of both the object and its surroundings and other factors. Tracking is 
-usually performed in the context of higher-level applications that require 
-the location and/or shape of the object in every frame. Typically, assumptions
- are made to constrain the tracking problem 
-in the context of a particular application\cite{REF}.
+Object tracking, in general, is a challenging problem. Difilties in tracking 
+objects can arise due to abrupt object motion or changing appearance patterns 
+of both the object and its surroundings and other factors. Tracking is usually 
+performed in the context of higher-level applications that require the location 
+and/or shape of the object in every frame. Typically, assumptions are made to 
+constrain the tracking problem in the context of a particular application
+\cite{REF}.
+
 
 
 \section{Methods}\label{methods}
@@ -27,14 +29,17 @@ in the context of a particular application\cite{REF}.
 Several simplifying assumptions were made to constrain the tracking problem.
 It was assumed that:
 \begin{enumerate}
-\item objects to be tracked will be puck-like robots and that they will 
-each appear in different shades of red or blue, or green.
-\item camera will be set up in an angle not less than 45\% with respect to the 
-plane it is observing. 
-\item on the top of the robot will be a triangle indicating it's direction and 
-that it will be in darker colour than the colour indicating the robot.  
-\item background of the image will be in colour other than any of the
- colours of the robots.
+    \item
+    The objects to be tracked will be puck-like "robots", coloured in different
+    shades of red, blue, and green.
+    \item
+    A triangle of a darker colour will sit on top of the robots, indicating
+    their directions.
+    \item
+    The camera observing the scene will be set up in an angle not less than 
+    45\% with respect to the plane it is observing. 
+    \item
+    The background of the scene will have a different colour than the robots.
 \end{enumerate}
 
 
