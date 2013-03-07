@@ -34,7 +34,7 @@ It was assumed that:
 \item[Input] \hfill \\
     $I$, a three channel image of dimensions $m \times n$ in the RGB colorspace.
 \item[Output] \hfill \\
-    $M$, a $m \times n \times 3$ binary matrix where for each pixel $P{ij}$ of
+    $M$, a $m \times n \times 3$ binary matrix where for each pixel $P_{ij}$ of
     $I$, it holds that: \\
     $M(i,j,1) = 1 \leftrightarrow P_{ij}$ belongs to the red robot, \\
     $M(i,j,2) = 1 \leftrightarrow P_{ij}$ belongs to the green robot, \\
@@ -241,29 +241,43 @@ the datasets used for this evaluation.
 
 \subsection{Detection of Robots}\label{colorresults}
 The algorithm described in Section \ref{coloralgo}, worked perfectly on 
-datasets 1 and 2.\\
+datasets 1 and 2.
 Evaluation on the third dataset led to the worst performance over all datasets, 
 with $\sim$60\% of the occurences of the blue robot being undetected and 
 $\sim$40\% of the occurences of the green robot being under-detected (leading 
-to bad direction detection).\\
+to bad direction detection).
 The performance on the fourth dataset was interesting: the red robot was under-
 detected in $\sim$45\% of the cases (with the blue and green robots being
 found just fine) - while in the other datasets the red robot was usually
 detected with the highest confidence.
-Over all four datasets, about 10\% of the robot instances were badly detected.
+Over all four datasets, about 10\% of the robot instances were badly detected.\\
+The fact that the color-detection algorithm works well on both datasets 1 and 2
+leads to the conjecture that it is invariant under texture changes in the scene 
+background and variations in robot-color saturation.
+The bad performance on dataset 3 can be explained by interference from the color
+of the scene background and by changes in scene illumination. The fact that the
+algorithm offers almost top-level performance on dataset 4 (captured on the same
+background as dataset 3) implies that the change in scene illumination is
+probably the largest influence on the algorithm's performance.\\
+This is in keeping with the intuition that daylight has more inherent variation
+than artificial light, thus introducing a higher degree of variability into the
+characteristics of the captured images.
 
 \subsection{Detection of Directions}\label{directionresults}
-Performance of detection of the directions was heavily dependent on the 
-performance of the detection of the robots. In case of precisely detected robot 
-detected direction perfectly matched the actual direction. 
-In case of loose detection - detection where some addition non-robot region is 
-misleadingly detected as a robot - detected direction perfectly matched the 
-actual direction due to algorithms ability to filter noisy detections. 
-In case of under-detection - detection where some parts of the image 
-representing the robot where omitted - detected direction was skewed on the 
-side opposite (from the axis matching the actual robot's direction) to the 
-misdirected fragment of the robot. Error was proportional to the error of 
-under-detected area of the robot. 
+Performance of robot direction detection, understandably, is heavily dependent 
+on the performance of the detection of the robots. If the robots are well
+isolated by Section \ref{coloralgo}'s algorithm, robot orientations are 
+perfectly detected.\\
+The algorithm is invariant under loose detection - false positive cases where 
+some addition non-robot region is misleadingly detected as a robot. This is 
+due to the algorithm's ability to filter-out noisy detections.\\
+In case of under-detection - false negative cases where some parts of the image
+representing the robot where not detected - the algorithm breaks: the predicted
+direction is skewed towards the opposite side of the under-detection. This is
+due to the algorithm not putting strict circular or elipsoidal constraints on 
+the shape of the robots: under detection is thus able to move the center of 
+mass of either the triangle or the robot-convex-hull. The error introduced by 
+this is proportional to the area of the under-detected region.
 \begin{figure}[ht]
     \begin{center}
         \subfigure[Loose hull detection]{
@@ -298,19 +312,37 @@ resolution in the image.
 
 
 \section{Discussion}\label{discussion}
-Overall performance of the algorithm can be evaluated as good. It operates 
-under little or no simplifying assumptions.
-Robot detection could be improved [WRITE PLEASE HOW]
-Another way how to improve the detection of the robots could be utilisation of 
-second order spatial statistics of the robot images. Using such approach might 
-give good results combined with our current approach.
-Direction detection could be improved by making it less dependent on detection 
-of the robots. It could be achieved by performing local search near the regions 
-detected as robots. Such approach would improve accuracy of the directions 
-detected, however it would make algorithm much slower. 
-Another possible direction of development could be shape analysis - currently 
-algorithms utilise only image's colour statistics due to limited information 
-about the scale of the images and the possible placements of the camera. 
+The algorithms in Sections \ref{coloralgo}, \ref{directionalgo}, and 
+\ref{trackingalgo} operate under a limited number of reasonable simplifying
+assumptions and performed well across a range of datasets captured under very
+different conditions.\\
+The robot color detection algorithm of Section \ref{coloralgo} could be improved
+by adding more stringent conditions on the shape of the robots e.g. fitting a
+circle or ellipse to them rather than a convex hull. This should improve the
+subsequent performance of the direction-detection algorithm by reducing the
+amount of under-detections.\\
+If assumptions about the size, scale, and shape of the robots can be made, Hugh 
+transforms or other shape-based techniques could be used to detect the robots.
+This would be more robust than the current color/pixel based approach but not 
+invariant under scale or differences in camera positions.\\
+Another way to improve the detection of the robots could be augmenting the
+current approach with the utilisation of second order spatial image statistics
+to pre-process the images. This would lead to a rough estimate of the robot
+positions with few false negatives, thus improving the currently utilised
+algorithms due to a reduced search space (implying a denser signal). A reduced
+search space also allows for computationally expensive but high-precision 
+techniques to be used. One example of such a technique is a local color-based
+search starting from a small seed of pixels that are hypothesised to be part of
+a robot.\\
+Direction detection could be improved by making it less dependent on the
+accuracy of the robot detection. One way to achieve this would be to base the 
+direction calculation on properties of the detected triangles (e.g. direction =
+tangent line to the longest side) rather than on the triangles' centers of 
+mass. This would increase robustness to under-detections.\\
+Cross-frame tracking could be improved by abusing spatio-temporal proximity. One
+way to do this would be put a cap on how far the centroid of the robot can move 
+in a certain frame interval, thus smoothing out the odd completely wrong 
+prediction.
 
 
 \section{Code}\label{code}
