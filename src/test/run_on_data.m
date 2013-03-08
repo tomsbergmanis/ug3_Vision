@@ -36,7 +36,8 @@ for c = 1 : num_dirs
     in_dir = inpath_dirs{c};
     files = dir(strcat(in_dir, filesep, '*.jpg'));
     file_names = {files.name};
-    out_dir = fullfile(outpath, strcat(IN_DIR, '-', num2str(c)));
+    [~, dir_name] = fileparts(in_dir);
+    out_dir = fullfile(outpath, strcat(IN_DIR, '-', dir_name));
     if ~exist(out_dir, 'dir')
         mkdir(out_dir);
     end
@@ -48,11 +49,15 @@ for c = 1 : num_dirs
         disp(sprintf('\tinput = %s', input(strfind(input, TL_DIR) : end)));
         image = imread(input);
         timer = tic;
-        mask = filter_fn(image);
+        [directions, ~, ~, hull] = filter_fn(image);
         elapsed = toc(timer);
         times(end + 1) = elapsed;
+        for dim = 1 : size(hull, 3)
+            hull(:,:,dim) = bwmorph(hull(:,:,dim), 'remove');
+        end
         output = fullfile(out_dir, file_name);
-        image = overlay_mask(image, mask, 'Saturation', 1);
+        image = overlay_mask(image, directions, 'Saturation', 0.75);
+        image = overlay_mask(image, hull);
         imwrite(image, output, 'jpg');
         disp(sprintf('\toutput = %s', output(strfind(input, TL_DIR) : end)));
         disp(sprintf('\tprocessing time = %fs', elapsed));

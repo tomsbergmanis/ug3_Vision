@@ -3,7 +3,7 @@ function res = main(path, varargin)
     image_type = 'jpg';
     start_offset = 0;
     time_step = 0.05;
-    show_robots = 0;
+    show_robots = 1;
     argc = size(varargin, 2);
     c = 1;
     while c <= argc
@@ -26,8 +26,8 @@ function res = main(path, varargin)
             end
             time_step = varargin{c + 1};
             c = c + 1;
-        elseif strcmpi(arg, 'ShowRobots')
-            show_robots = 1;
+        elseif strcmpi(arg, 'NoShowRobots')
+            show_robots = 0;
         end
         c = c + 1;
     end
