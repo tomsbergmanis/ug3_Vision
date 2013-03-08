@@ -9,6 +9,9 @@ function background = median_filter(path, image_type, start_offset, step)
     if nargin < 3
         start_offset = 0;
     end
+    if nargin < 4
+        step = 1;
+    end
 
     dim = 2;
 
